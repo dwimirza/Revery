@@ -57,7 +57,7 @@ public class daoItem {
             statement.setString(2, item1.getItem());
             statement.setInt(3, item1.getCatId());
             statement.setInt(4, item1.getRentPrice());
-            statement.setInt(5, item1.stock());
+            statement.setInt(5, item1.getStock());
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
