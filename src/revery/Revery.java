@@ -5,10 +5,11 @@
 package revery;
 
 import dao.daoItem;
+import model.Category;
 
 /**
  *
- * @author USER
+ * @author Nanda
  */
 public class Revery {
 
@@ -18,6 +19,8 @@ public class Revery {
     public static void main(String[] args) {
         daoItem objDB = new daoItem();
         System.out.println("Status Koneksi: "+objDB.setConnection());
+        
+        
     }
     
 }
