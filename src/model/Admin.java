@@ -9,7 +9,23 @@ package model;
  * @author USER
  */
 public class Admin {
-    private int adminId;
     private String username;
     private String password;
+    
+    public String getUsername(){
+       return this.username;
+    }
+    public String getPassword(){
+       return this.password;
+    }
+    
+    public void setUsername(String name)
+    {
+        this.username = name;
+    };
+    
+    public void setPassword(String pass)
+    {
+        this.password = pass;
+    }
 }
