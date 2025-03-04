@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Revery">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/Revery.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

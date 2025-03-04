@@ -4,7 +4,10 @@
  */
 package revery;
 
+import javax.swing.SwingUtilities;
+
 import dao.daoItem;
+import gui.GUIHomepage;
 import model.Category;
 
 /**
@@ -19,7 +22,14 @@ public class Revery {
     public static void main(String[] args) {
         daoItem objDB = new daoItem();
         System.out.println("Status Koneksi: "+objDB.setConnection());
-        
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                // Initialize and show your GUIHomepage
+                new GUIHomepage(); // Assuming GUIHomepage is a JFrame or similar class
+            }
+        });
         
     }
     

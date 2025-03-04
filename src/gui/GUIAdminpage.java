@@ -11,10 +11,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
+
+import dao.daoItem;
+import model.Category;
+import model.Item;
 
 /**
  *
@@ -183,55 +185,44 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void readShowDialog() {
-        JPanel panel = new JPanel(new BorderLayout()); // Menggunakan BorderLayout untuk menambahkan JScrollPane
+        JPanel panel = new JPanel(new BorderLayout());
 
+        // 🔹 Tambahkan pilihan "Category" dan "Item"
         rentalUnits = new ArrayList<>();
-        rentalUnits.add("Elektronik");
-        rentalUnits.add("Peralatan Rumah");
+        rentalUnits.add("Category");
+        rentalUnits.add("Item");
 
-        // Menyiapkan ListModel untuk JList
+        // 🔹 Buat ListModel untuk JList
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (String item : rentalUnits) {
-            listModel.addElement(item);  // Menambahkan setiap item dalam list ke list model
+            listModel.addElement(item);
         }
 
-        // Membuat JList dengan listModel
+        // 🔹 Buat JList dengan pilihan
         JList<String> rentalList = new JList<>(listModel);
-        rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Membatasi hanya satu pilihan
-
-        // Membungkus JList dengan JScrollPane untuk mendukung scrolling
+        rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(rentalList);
-        scrollPane.setPreferredSize(new Dimension(150, 80));
-
-        // Menambahkan JScrollPane ke panel
+        scrollPane.setPreferredSize(new Dimension(200, 100));
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Panel untuk input teks
-        JPanel inputPanel = new JPanel(new GridLayout(2, 1));
-
-        // Menambahkan panel input di bawah daftar
-        panel.add(inputPanel, BorderLayout.SOUTH);
-
-        // 🔹 Menampilkan Dialog
-        int result = JOptionPane.showConfirmDialog(null, panel, "Show Data",
+        // 🔹 Tampilkan Dialog
+        int result = JOptionPane.showConfirmDialog(null, panel, "Pilih Data",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        // ✅ Jika User Menekan OK
+        // ✅ Jika pengguna menekan OK
         if (result == JOptionPane.OK_OPTION) {
-            // Ambil kategori yang dipilih dari rentalList
-            String selectedCategory = rentalList.getSelectedValue();
+            String selectedChoice = rentalList.getSelectedValue();
 
-            if (selectedCategory != null) {
-                // Ambil daftar barang berdasarkan kategori yang dipilih
-                String itemList = getItemsByCategory(selectedCategory);
+            if (selectedChoice != null) {
+                // 🔹 Ambil daftar kategori atau item dari database
+                String itemList = getDataItemAndCategory(selectedChoice);
 
-                // Tampilkan data di textAreaData
+                // 🔹 Tampilkan di textAreaData
                 textAreaData.setText(itemList);
+            } else {
+                JOptionPane.showMessageDialog(null, "Silakan pilih opsi terlebih dahulu.");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Show Data Failed");
         }
-
     }
 
     private void addShowDialog() {
@@ -279,7 +270,6 @@ public class GUIAdminpage extends javax.swing.JFrame {
         }
     }
 
-// ✅ Fungsi untuk Menambah Kategori
     private void tambahKategori() {
         JTextField categoryIdField = new JTextField();
         JTextField categoryNameField = new JTextField();
@@ -304,7 +294,6 @@ public class GUIAdminpage extends javax.swing.JFrame {
         }
     }
 
-// ✅ Fungsi untuk Menambah Item
     private void tambahItem() {
         JTextField itemIdField = new JTextField();
         JTextField nameItemField = new JTextField();
@@ -342,8 +331,9 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void updateShowDialog() {
-        JPanel panel = new JPanel(new BorderLayout()); // Menggunakan BorderLayout untuk menambahkan JScrollPane
+        JPanel panel = new JPanel(new BorderLayout());
 
+        // Menyiapkan opsi yang bisa dipilih oleh user
         rentalUnits = new ArrayList<>();
         rentalUnits.add("Category");
         rentalUnits.add("Item");
@@ -351,46 +341,104 @@ public class GUIAdminpage extends javax.swing.JFrame {
         // Menyiapkan ListModel untuk JList
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (String item : rentalUnits) {
-            listModel.addElement(item);  // Menambahkan setiap item dalam list ke list model
+            listModel.addElement(item);
         }
 
         // Membuat JList dengan listModel
         JList<String> rentalList = new JList<>(listModel);
-        rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Membatasi hanya satu pilihan
+        rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Membungkus JList dengan JScrollPane untuk mendukung scrolling
+        // Membungkus JList dengan JScrollPane
         JScrollPane scrollPane = new JScrollPane(rentalList);
         scrollPane.setPreferredSize(new Dimension(150, 80));
 
         // Menambahkan JScrollPane ke panel
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Panel untuk input teks
-        JPanel inputPanel = new JPanel(new GridLayout(2, 1));
-
-        // Menambahkan panel input di bawah daftar
-        panel.add(inputPanel, BorderLayout.SOUTH);
-
-        // 🔹 Menampilkan Dialog
-        int result = JOptionPane.showConfirmDialog(null, panel, "Add Data",
+        // Menampilkan Dialog Pilihan
+        int result = JOptionPane.showConfirmDialog(null, panel, "Update Data",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        // ✅ Jika User Menekan OK
+        // Jika User Menekan OK
         if (result == JOptionPane.OK_OPTION) {
-            // Jika memilih kategori dan ingin memilih barang dari kategori itu
-            String selectedCategory = rentalList.getSelectedValue();
-            if (selectedCategory != null) {
-                // Menampilkan dialog baru untuk memilih barang dari kategori yang dipilih
-//            showSelectItemDialog(selectedCategory);
+            String selectedOption = rentalList.getSelectedValue();
+
+            if ("Category".equals(selectedOption)) {
+                editKategori(); // Panggil fungsi untuk tambah kategori
+            } else if ("Item".equals(selectedOption)) {
+                editItem(); // Panggil fungsi untuk tambah item
+            } else {
+                JOptionPane.showMessageDialog(null, "Silakan pilih kategori atau item.");
             }
         } else {
             JOptionPane.showMessageDialog(null, "Update Data Failed");
         }
     }
 
-    private void deleteShowDialog() {
-        JPanel panel = new JPanel(new BorderLayout()); // Menggunakan BorderLayout untuk menambahkan JScrollPane
+    private void editKategori() {
+        JTextField categoryIdField = new JTextField();
+        JTextField categoryNameField = new JTextField();
 
+        JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
+        categoryPanel.add(new JLabel("Category ID:"));
+        categoryPanel.add(categoryIdField);
+        categoryPanel.add(new JLabel("Category Name:"));
+        categoryPanel.add(categoryNameField);
+
+        int result = JOptionPane.showConfirmDialog(null, categoryPanel,
+                "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String categoryId = categoryIdField.getText();
+            String categoryName = categoryNameField.getText();
+
+            // Simpan kategori ke database atau struktur data
+//            addCategory(categoryId, categoryName);
+
+            JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
+        }
+    }
+
+    private void editItem() {
+        JTextField itemIdField = new JTextField();
+        JTextField nameItemField = new JTextField();
+        JTextField categoryIdField = new JTextField();
+        JTextField rentalPriceField = new JTextField();
+        JTextField stockField = new JTextField();
+
+        JPanel itemPanel = new JPanel(new GridLayout(5, 2));
+        itemPanel.add(new JLabel("Item ID:"));
+        itemPanel.add(itemIdField);
+        itemPanel.add(new JLabel("Item Name:"));
+        itemPanel.add(nameItemField);
+        itemPanel.add(new JLabel("Category ID:"));
+        itemPanel.add(categoryIdField);
+        itemPanel.add(new JLabel("Rental Price:"));
+        itemPanel.add(rentalPriceField);
+        itemPanel.add(new JLabel("Stock:"));
+        itemPanel.add(stockField);
+
+        int result = JOptionPane.showConfirmDialog(null, itemPanel,
+                "Input Item Data", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String itemId = itemIdField.getText();
+            String itemName = nameItemField.getText();
+            String categoryId = categoryIdField.getText();
+            double rentalPrice = Double.parseDouble(rentalPriceField.getText());
+            int stock = Integer.parseInt(stockField.getText());
+
+            // Simpan item ke database atau struktur data
+//            addItem(itemId, itemName, categoryId, rentalPrice, stock);
+
+            JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
+        }
+    }
+
+    private void deleteShowDialog() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Menyiapkan opsi yang bisa dipilih oleh user
         rentalUnits = new ArrayList<>();
         rentalUnits.add("Category");
         rentalUnits.add("Item");
@@ -398,58 +446,128 @@ public class GUIAdminpage extends javax.swing.JFrame {
         // Menyiapkan ListModel untuk JList
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (String item : rentalUnits) {
-            listModel.addElement(item);  // Menambahkan setiap item dalam list ke list model
+            listModel.addElement(item);
         }
 
         // Membuat JList dengan listModel
         JList<String> rentalList = new JList<>(listModel);
-        rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Membatasi hanya satu pilihan
+        rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Membungkus JList dengan JScrollPane untuk mendukung scrolling
+        // Membungkus JList dengan JScrollPane
         JScrollPane scrollPane = new JScrollPane(rentalList);
         scrollPane.setPreferredSize(new Dimension(150, 80));
 
         // Menambahkan JScrollPane ke panel
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Panel untuk input teks
-        JPanel inputPanel = new JPanel(new GridLayout(2, 1));
-
-        // Menambahkan panel input di bawah daftar
-        panel.add(inputPanel, BorderLayout.SOUTH);
-
-        // 🔹 Menampilkan Dialog
-        int result = JOptionPane.showConfirmDialog(null, panel, "Add Data",
+        // Menampilkan Dialog Pilihan
+        int result = JOptionPane.showConfirmDialog(null, panel, "Delete Data",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        // ✅ Jika User Menekan OK
+        // Jika User Menekan OK
         if (result == JOptionPane.OK_OPTION) {
-            // Jika memilih kategori dan ingin memilih barang dari kategori itu
-            String selectedCategory = rentalList.getSelectedValue();
-            if (selectedCategory != null) {
-                // Menampilkan dialog baru untuk memilih barang dari kategori yang dipilih
-//            showSelectItemDialog(selectedCategory);
+            String selectedOption = rentalList.getSelectedValue();
+
+            if ("Category".equals(selectedOption)) {
+                hapusKategori(); // Panggil fungsi untuk tambah kategori
+            } else if ("Item".equals(selectedOption)) {
+                hapusItem(); // Panggil fungsi untuk tambah item
+            } else {
+                JOptionPane.showMessageDialog(null, "Silakan pilih kategori atau item.");
             }
         } else {
             JOptionPane.showMessageDialog(null, "Delete Data Failed");
         }
     }
 
-    private String getItemsByCategory(String category) {
-        // Contoh data kategori dan barang
-        HashMap<String, List<String>> categoryItems = new HashMap<>();
-        categoryItems.put("Elektronik", Arrays.asList("Laptop", "Kamera", "Smartphone"));
-        categoryItems.put("Peralatan Rumah", Arrays.asList("Vacuum Cleaner", "Blender", "Rice Cooker"));
+    private void hapusKategori() {
+        JTextField categoryIdField = new JTextField();
+        JTextField categoryNameField = new JTextField();
 
-        // Ambil data barang dari kategori
-        List<String> items = categoryItems.get(category);
+        JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
+        categoryPanel.add(new JLabel("Category ID:"));
+        categoryPanel.add(categoryIdField);
+        categoryPanel.add(new JLabel("Category Name:"));
+        categoryPanel.add(categoryNameField);
 
-        // Jika kategori ditemukan, gabungkan item menjadi satu string
-        if (items != null) {
-            return String.join("\n", items);
-        } else {
-            return "Tidak ada data untuk kategori ini.";
+        int result = JOptionPane.showConfirmDialog(null, categoryPanel,
+                "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String categoryId = categoryIdField.getText();
+            String categoryName = categoryNameField.getText();
+
+            // Simpan kategori ke database atau struktur data
+//            addCategory(categoryId, categoryName);
+
+            JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
         }
+    }
+
+    private void hapusItem() {
+        JTextField itemIdField = new JTextField();
+        JTextField nameItemField = new JTextField();
+        JTextField categoryIdField = new JTextField();
+        JTextField rentalPriceField = new JTextField();
+        JTextField stockField = new JTextField();
+
+        JPanel itemPanel = new JPanel(new GridLayout(5, 2));
+        itemPanel.add(new JLabel("Item ID:"));
+        itemPanel.add(itemIdField);
+        itemPanel.add(new JLabel("Item Name:"));
+        itemPanel.add(nameItemField);
+        itemPanel.add(new JLabel("Category ID:"));
+        itemPanel.add(categoryIdField);
+        itemPanel.add(new JLabel("Rental Price:"));
+        itemPanel.add(rentalPriceField);
+        itemPanel.add(new JLabel("Stock:"));
+        itemPanel.add(stockField);
+
+        int result = JOptionPane.showConfirmDialog(null, itemPanel,
+                "Input Item Data", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String itemId = itemIdField.getText();
+            String itemName = nameItemField.getText();
+            String categoryId = categoryIdField.getText();
+            double rentalPrice = Double.parseDouble(rentalPriceField.getText());
+            int stock = Integer.parseInt(stockField.getText());
+
+            // Simpan item ke database atau struktur data
+//            addItem(itemId, itemName, categoryId, rentalPrice, stock);
+
+            JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
+        }
+    }
+
+    private String getDataItemAndCategory(String choice) {
+        daoItem dao = new daoItem(); // Buat objek DAO untuk mengambil data dari database
+
+        // 🔹 Jika user memilih "Category", ambil kategori dari database
+        if (choice.equalsIgnoreCase("Category")) {
+            List<Category> categories = dao.getCategory();
+            List<String> categoryNames = new ArrayList<>();
+
+            for (Category category : categories) {
+                categoryNames.add(category.getCatName()); // Ambil nama kategori
+            }
+
+            return categoryNames.isEmpty() ? "Tidak ada kategori tersedia." : "Kategori:\n" + String.join("\n", categoryNames);
+        }
+
+        // 🔹 Jika user memilih "Item", ambil item dari database
+        if (choice.equalsIgnoreCase("Item")) {
+            List<Item> items = dao.getItem();
+            List<String> itemNames = new ArrayList<>();
+
+            for (Item item : items) {
+                itemNames.add(item.getItem()); // Ambil nama item
+            }
+
+            return itemNames.isEmpty() ? "Tidak ada item tersedia." : "Item:\n" + String.join("\n", itemNames);
+        }
+
+        return "Pilihan tidak valid.";
     }
 
 

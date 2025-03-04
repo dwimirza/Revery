@@ -68,14 +68,18 @@ public class GUIHomepage extends javax.swing.JFrame {
         });
     }
 
+    public void setOutCategory(String category){
+        out_category.setText(category);
+    }
+    public void setOutItem(String item){
+        out_item.setText(item);
+    }
+
     private void showRentDialog() {
         JPanel panel = new JPanel(new BorderLayout()); // Menggunakan BorderLayout untuk menambahkan JScrollPane
 
         rentalUnits = new ArrayList<>();
-        rentalUnits.add("House");
-        rentalUnits.add("Traveling");
-        rentalUnits.add("Meeting");
-        rentalUnits.add("Product Tool");
+        rentalUnits.add(String.valueOf(out_category));
 
         // Menyiapkan ListModel untuk JList
         DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -122,26 +126,12 @@ public class GUIHomepage extends javax.swing.JFrame {
     private void showSelectItemDialog(String category) {
         // Misalnya kita punya barang yang berbeda berdasarkan kategori yang dipilih
         List<String> items = new ArrayList<>();
-        if (category.equals("House")) {
-            items.add("House Type A");
-            items.add("House Type B");
-            items.add("House Type C");
-        } else if (category.equals("Traveling")) {
-            items.add("Outdoor Shoes");
-            items.add("Outdoor Tent");
-            items.add("Outdoor Backpack");
-        } else if (category.equals("Meeting")) {
-            items.add("LED Screen");
-            items.add("Spotlight");
-            items.add("Backdrop");
-            items.add("Buffet Table");
-        } else if (category.equals("Product Tool")) {
-            items.add("Excavator");
-            items.add("Crane");
-            items.add("Loader");
-            items.add("Jigsaw");
-            items.add("Crimping Tool");
-            items.add("Brush Cutter");
+        String expectedCategory;
+        expectedCategory = category;
+        if (category.equalsIgnoreCase(expectedCategory)) {
+            items.add(String.valueOf(out_item)); // Tambahkan out_item ke dalam list items
+        } else {
+            System.out.println("Item not found for category: " + category); // Pesan error yang lebih spesifik
         }
 
         // Menyiapkan ListModel untuk JList
@@ -169,7 +159,7 @@ public class GUIHomepage extends javax.swing.JFrame {
         // Jika pengguna menekan OK, tampilkan barang yang dipilih
         if (itemResult == JOptionPane.OK_OPTION) {
             String selectedItem = itemList.getSelectedValue();
-            if (selectedItem != null) {
+            if (selectedItem != null && !selectedItem.equals("null")) {
                 // Membuat panel untuk input
                 JPanel panel = new JPanel(new GridLayout(3, 2)); // 3 baris, 2 kolom
                 JTextField namaField = new JTextField();
@@ -321,5 +311,7 @@ public class GUIHomepage extends javax.swing.JFrame {
     private javax.swing.JButton btnReturn;
     private javax.swing.JLabel textAsking;
     private javax.swing.JLabel textWelcome;
+    private javax.swing.JLabel out_category;
+    private javax.swing.JLabel out_item;
     // End of variables declaration//GEN-END:variables
 }
