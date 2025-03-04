@@ -120,8 +120,8 @@ public class daoItem {
             statement.setString(3, String.valueOf(rental1.getItemId()));  // Convert String itemId to int
             statement.setDate(4, Date.valueOf(rental1.getRentalDate())); // Convert LocalDate to SQL Date
             statement.setDate(5, Date.valueOf(rental1.getReturnDate())); // Convert LocalDate to SQL Date
-            statement.setInt(6, rental1.getTotalPrice());
-            statement.setInt(7, rental1.getRentalStatus());
+            statement.setString(6, rental1.getTotalPrice());
+            statement.setString(7, rental1.getRentalStatus());
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
