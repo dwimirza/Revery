@@ -1,9 +1,11 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gui;
 
+import controller.controllerHome;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.*;
+import model.Category;
 
 /**
  *
@@ -20,7 +23,8 @@ import javax.swing.*;
 public class GUIHomepage extends javax.swing.JFrame {
 
     private ArrayList<String> rentalUnits;
-
+    private JLabel out_category;
+    private JLabel out_item;
     /**
      * Creates new form GUIHomepage
      */
@@ -68,8 +72,8 @@ public class GUIHomepage extends javax.swing.JFrame {
         });
     }
 
-    public void setOutCategory(String category){
-        out_category.setText(category);
+    public void setOutCategory(int category){
+        out_category.setText(Integer.toString(category));
     }
     public void setOutItem(String item){
         out_item.setText(item);
@@ -78,19 +82,21 @@ public class GUIHomepage extends javax.swing.JFrame {
     private void showRentDialog() {
         JPanel panel = new JPanel(new BorderLayout()); // Menggunakan BorderLayout untuk menambahkan JScrollPane
 
-        rentalUnits = new ArrayList<>();
+            
+        controllerHome controller = new controllerHome(this);
+        List<Category> categories = controller.getCategories();
+        
+        rentalUnits = new ArrayList<>();    
         rentalUnits.add(String.valueOf(out_category));
-
-        // Menyiapkan ListModel untuk JList
+        
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String item : rentalUnits) {
-            listModel.addElement(item);  // Menambahkan setiap item dalam list ke list model
+        for (Category category : categories) {
+            listModel.addElement(category.getCatName()); // Add category name
         }
 
-        // Membuat JList dengan listModel
         JList<String> rentalList = new JList<>(listModel);
-        rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Membatasi hanya satu pilihan
-
+        rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
         // Membungkus JList dengan JScrollPane untuk mendukung scrolling
         JScrollPane scrollPane = new JScrollPane(rentalList);
 
@@ -311,7 +317,5 @@ public class GUIHomepage extends javax.swing.JFrame {
     private javax.swing.JButton btnReturn;
     private javax.swing.JLabel textAsking;
     private javax.swing.JLabel textWelcome;
-    private javax.swing.JLabel out_category;
-    private javax.swing.JLabel out_item;
     // End of variables declaration//GEN-END:variables
 }

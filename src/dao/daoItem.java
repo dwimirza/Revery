@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Admin;
 import model.Category;
 import model.Item;
 import model.Payment;
@@ -26,7 +25,7 @@ import model.Returns;
  *
  * @author USER
  */
-public class daoItem {
+public class daoItem implements interfaceRevery{
         
     private Connection connection = null;
     private String insert;
@@ -37,7 +36,7 @@ public class daoItem {
     
     public Connection setConnection() {
         try{
-            String url = "jdbc:mysql://localhost:3306/dbrevery";    
+            String url = "jdbc:mysql://localhost:3306/dbrevery";
             String user = "root";
             String pass = "";
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -48,7 +47,6 @@ public class daoItem {
         }
             return connection; // mengembalikan koneksi
     }
-    
     public boolean loginAdmin(Admin admin1) {
         PreparedStatement statement= null;
         ResultSet rs = null;
@@ -82,6 +80,7 @@ public class daoItem {
     }
 
         
+    @Override
     public void insertItem(Item item1) {
         PreparedStatement statement = null;
         insert = "INSERT INTO item (itemId, name, categoryId, rentLPrice, stock) VALUES (?, ?, ?, ?, ?);";
@@ -254,14 +253,16 @@ public class daoItem {
     }
     public List<Category> getCategory() {
         List<Category> listCategory = null;
+        select = "SELECT * FROM category";
         try {
             listCategory = new ArrayList<Category>();
+            setConnection();
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
                 Category category1 = new Category();
-                category1.setId(rs.getInt("id"));
-                category1.setCatName(rs.getString("name"));
+                category1.setId(rs.getInt("categoryId"));
+                category1.setCatName(rs.getString("categoryName"));
                 listCategory.add(category1);
             }
         } catch (SQLException ex) {
@@ -313,5 +314,28 @@ public class daoItem {
         }
 
         return listReturns;
+    }
+
+    public void insert(Item item1) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void update(Item item1) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void updateItem(Item item1) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void updateCategory(Category category1) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void deleteC(int categoryId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
