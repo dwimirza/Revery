@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Admin;
 import model.Category;
 import model.Item;
 import model.Payment;
@@ -36,7 +37,7 @@ public class daoItem {
     
     public Connection setConnection() {
         try{
-            String url = "jdbc:mysql://localhost:3306/dbrevery";
+            String url = "jdbc:mysql://localhost:3306/dbrevery";    
             String user = "root";
             String pass = "";
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -47,6 +48,39 @@ public class daoItem {
         }
             return connection; // mengembalikan koneksi
     }
+    
+    public boolean loginAdmin(Admin admin1) {
+        PreparedStatement statement= null;
+        ResultSet rs = null;
+        select = "SELECT * FROM admin WHERE username = ? AND password = ?";
+
+        try {
+            setConnection();
+            statement = connection.prepareStatement(select);
+            statement.setString(1, admin1.getUsername());
+            statement.setString(2, admin1.getPassword()); // ⚠️ Use hashed passwords in a real app
+            rs = statement.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Login successful!");
+                return true;
+            } else {
+                System.out.println("Invalid username or password.");
+                return false; // Return false when login fails
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false; // Return false if a SQL error occurs
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (statement != null) statement.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
         
     public void insertItem(Item item1) {
         PreparedStatement statement = null;

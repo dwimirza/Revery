@@ -4,6 +4,7 @@
  */
 package gui;
 
+import dao.daoItem;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -15,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import model.Admin;
 
 /**
  *
@@ -46,11 +48,16 @@ public class GUILoginpage extends javax.swing.JFrame {
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                daoItem objDb = new daoItem();
                 String username = fieldUsername.getText();
                 String password = new String(fieldPassword.getPassword());
-
+                Admin admin1 = new Admin();
+                admin1.setUsername(username);
+                admin1.setPassword(password);
+                
+                
                 // Cek username dan password
-                if (username.equals("admin") && password.equals("1234")) {
+                if (objDb.loginAdmin(admin1)) {
                     JOptionPane.showMessageDialog(null, "Login Berhasil!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                     new GUIAdminpage();
