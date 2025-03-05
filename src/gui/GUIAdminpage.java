@@ -290,7 +290,6 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
             // Simpan kategori ke database atau struktur data
 //            addCategory(categoryId, categoryName);
-
             JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
         }
     }
@@ -326,7 +325,6 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
             // Simpan item ke database atau struktur data
 //            addItem(itemId, itemName, categoryId, rentalPrice, stock);
-
             JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
         }
     }
@@ -395,7 +393,6 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
             // Simpan kategori ke database atau struktur data
 //            addCategory(categoryId, categoryName);
-
             JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
         }
     }
@@ -431,7 +428,6 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
             // Simpan item ke database atau struktur data
 //            addItem(itemId, itemName, categoryId, rentalPrice, stock);
-
             JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
         }
     }
@@ -482,67 +478,51 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void hapusKategori() {
+        daoItem dao1 = new daoItem();
         JTextField categoryIdField = new JTextField();
-        JTextField categoryNameField = new JTextField();
 
         JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
         categoryPanel.add(new JLabel("Category ID:"));
         categoryPanel.add(categoryIdField);
-        categoryPanel.add(new JLabel("Category Name:"));
-        categoryPanel.add(categoryNameField);
 
         int result = JOptionPane.showConfirmDialog(null, categoryPanel,
                 "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-            String categoryId = categoryIdField.getText();
-            String categoryName = categoryNameField.getText();
+            String categoryIdText = categoryIdField.getText(); // Ambil teks dari field input
 
-            // Simpan kategori ke database atau struktur data
-//            addCategory(categoryId, categoryName);
-
-            JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
+            try {
+                int categoryId = Integer.parseInt(categoryIdText); // Konversi ke integer
+                dao1.deleteC(categoryId); // Pastikan method delete menerima int
+                JOptionPane.showMessageDialog(null, "Kategori berhasil dihapus!");
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Kategori ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
+
     }
 
     private void hapusItem() {
         JTextField itemIdField = new JTextField();
-        JTextField nameItemField = new JTextField();
-        JTextField categoryIdField = new JTextField();
-        JTextField rentalPriceField = new JTextField();
-        JTextField stockField = new JTextField();
 
-        JPanel itemPanel = new JPanel(new GridLayout(5, 2));
+        JPanel itemPanel = new JPanel(new GridLayout(2, 2));
         itemPanel.add(new JLabel("Item ID:"));
         itemPanel.add(itemIdField);
-        itemPanel.add(new JLabel("Item Name:"));
-        itemPanel.add(nameItemField);
-        itemPanel.add(new JLabel("Category ID:"));
-        itemPanel.add(categoryIdField);
-        itemPanel.add(new JLabel("Rental Price:"));
-        itemPanel.add(rentalPriceField);
-        itemPanel.add(new JLabel("Stock:"));
-        itemPanel.add(stockField);
 
         int result = JOptionPane.showConfirmDialog(null, itemPanel,
                 "Input Item Data", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
             String itemId = itemIdField.getText();
-            String itemName = nameItemField.getText();
-            String categoryId = categoryIdField.getText();
-            double rentalPrice = Double.parseDouble(rentalPriceField.getText());
-            int stock = Integer.parseInt(stockField.getText());
 
             // Simpan item ke database atau struktur data
 //            addItem(itemId, itemName, categoryId, rentalPrice, stock);
-
-            JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
+            JOptionPane.showMessageDialog(null, "Item berhasil dihapus!");
         }
     }
 
     private String getDataItemAndCategory(String choice) {
-        daoItem dao = new daoItem(); // Buat objek DAO untuk mengambil data dari database
+        daoItem dao = new daoItem();
 
         // 🔹 Jika user memilih "Category", ambil kategori dari database
         if (choice.equalsIgnoreCase("Category")) {
@@ -550,10 +530,11 @@ public class GUIAdminpage extends javax.swing.JFrame {
             List<String> categoryNames = new ArrayList<>();
 
             for (Category category : categories) {
-                categoryNames.add(category.getCatName()); // Ambil nama kategori
+                categoryNames.add(category.getId() + " - " + category.getCatName());
             }
 
             return categoryNames.isEmpty() ? "Tidak ada kategori tersedia." : "Kategori:\n" + String.join("\n", categoryNames);
+
         }
 
         // 🔹 Jika user memilih "Item", ambil item dari database

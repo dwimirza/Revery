@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Admin;
 import model.Category;
 import model.Item;
 import model.Payment;
@@ -239,8 +240,9 @@ public class daoItem implements interfaceRevery{
             ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
                 Item item1 = new Item();
-                item1.setId(rs.getInt("id"));
+                item1.setId(rs.getInt("itemId"));
                 item1.setItem(rs.getString("name"));
+                item1.setCatId(rs.getInt("categoryId"));
                 item1.setRentPrice(rs.getInt("rentalPrice"));
                 item1.setStock(rs.getInt("stock"));
                 listItem.add(item1);
