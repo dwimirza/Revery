@@ -63,7 +63,7 @@ public class controllerHome{
     
     public void showRentalI(Item item1){
         Home.setOutItem(item1.getId());
-//        showSelectItemDialog(category1.getCatName());
+//        showSelectItemDialog(category1.getCatNamFe());
     }
  
     public void showRentalR(Rental rental1){
@@ -97,8 +97,8 @@ public class controllerHome{
         payment.setPaymentStatus(1);
         infcRevery.insertPayment(payment);
     }
-    public void insertReturn(int paymentId){
-        List<Returns> returnDataList = infcRevery.getReturnsByPaymentId(paymentId);
+       public double insertReturn(int paymentId) {
+    List<Returns> returnDataList = infcRevery.getReturnsByPaymentId(paymentId);
 
     if (!returnDataList.isEmpty()) {
         LocalDate currentDate = LocalDate.now();
@@ -106,12 +106,13 @@ public class controllerHome{
 
         // Calculate Fee
         long rentalDays = ChronoUnit.DAYS.between(returnInfo.getRentalDate(), currentDate);
-         double totalFee ;
-        if(rentalDays <= 0){
+        double totalFee;
+        if (rentalDays <= 0) {
             totalFee = returnInfo.getFee();
-        }else{
+        } else {
             totalFee = rentalDays * returnInfo.getFee();
         }
+
         // Check if past due date
         if (currentDate.isAfter(returnInfo.getReturnDate())) {
             totalFee += 250000; // Add penalty if overdue
@@ -123,14 +124,17 @@ public class controllerHome{
         returnEntry.setReturnDate(currentDate);
         returnEntry.setFee(totalFee);
         infcRevery.insertReturn(returnEntry);
-         
-        infcRevery.updateRentalStatus(returnInfo.getRentalId(), "2");
 
+        // Update rental and payment status
+        infcRevery.updateRentalStatus(returnInfo.getRentalId(), "2");
         infcRevery.updatePaymentStatus(paymentId, "2");
+
+        return totalFee; // ✅ Return the total fee
     } else {
         JOptionPane.showMessageDialog(null, "No records found for Payment ID: " + paymentId);
+        return -1; // Indicate failure
     }
-    }
+}
 
     
 }

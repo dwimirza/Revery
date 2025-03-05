@@ -184,7 +184,7 @@ public class daoItem implements interfaceRevery{
                    "FROM payments p " +
                    "JOIN rentals r ON r.rentalId = p.rentalId " +
                    "JOIN item i ON i.itemId = r.itemId " +
-                   "WHERE p.paymentId = ?";
+                   "WHERE p.paymentId = ? and p.paymentStatus = 1";
 
     try (PreparedStatement st = connection.prepareStatement(query)) {
         st.setInt(1, paymentId);
@@ -453,7 +453,7 @@ public class daoItem implements interfaceRevery{
         select = "select r.borrowerName, i.name as itemName, r.rentalDate, r.rentalStatus from payments p \n" +
                  "join rentals r on r.rentalId = p.rentalId \n" +
                  "join item i on i.itemId = r.itemId\n" +
-                 "where p.paymentId = ?";
+                 "where p.paymentId = ? and p.paymentStatus = 1";
         
         try {
             listReturns = new ArrayList<Returns>();
