@@ -128,36 +128,58 @@ public class GUIHomepage extends javax.swing.JFrame {
     }
 
     public void showReturnDialog() {
-        controllerHome controller = new controllerHome(this);
+    controllerHome controller = new controllerHome(this);
 
-        // Menampilkan dialog input untuk payment id
-        String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
-        if (paymentId != null && !paymentId.trim().isEmpty()) {
-            try {
-                List<Returns> returnDataList = controller.getOneReturn(paymentId);
+    // Menampilkan dialog input untuk payment id
+    String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
+    
+    if (paymentId != null && !paymentId.trim().isEmpty()) {
+        try {
+            List<Returns> returnDataList = controller.getOneReturn(paymentId);
 
-                if (!returnDataList.isEmpty()) {
-                    StringBuilder formattedOutput = new StringBuilder("<html>");
-                    for (Returns returnData : returnDataList) {
-                        formattedOutput.append("Nama Penyewa     : ").append(returnData.getBorrowerName()).append("<br>")
-                                .append("Barang Dipinjam  : ").append(returnData.getitemName()).append("<br>")
-                                .append("Tanggal Meminjam : ").append(returnData.getReturnDate()).append("<br>")
-                                .append("Status           : ").append(returnData.getStatus()).append("<br><br>");
-                    }
-                    formattedOutput.append("</html>");
-
-                    JOptionPane.showMessageDialog(null, formattedOutput.toString());
-                } else {
-                    JOptionPane.showMessageDialog(null, "Data tidak ditemukan untuk Payment ID: " + paymentId);
+            if (!returnDataList.isEmpty()) {
+                StringBuilder formattedOutput = new StringBuilder("<html>");
+                
+                for (Returns returnData : returnDataList) {
+                    formattedOutput.append("Nama Penyewa     : ").append(returnData.getBorrowerName()).append("<br>")
+                            .append("Barang Dipinjam  : ").append(returnData.getitemName()).append("<br>")
+                            .append("Tanggal Meminjam : ").append(returnData.getRentalDate()).append("<br>")
+                            .append("Status           : ").append(returnData.getStatus()).append("<br><br>");
                 }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Payment ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+                formattedOutput.append("</html>");
+
+                // Menampilkan detail return
+                JOptionPane.showMessageDialog(null, formattedOutput.toString());
+
+                // Membuat array untuk opsi button
+                Object[] options = {"Return", "Cancel"};
+
+                // Menampilkan dialog dengan opsi button Return dan Cancel
+                int choice = JOptionPane.showOptionDialog(null, formattedOutput.toString(), "Return Details",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+                // Menangani pilihan user
+                if (choice == 0) {
+                    // User memilih Return
+                    int idNum = Integer.parseInt(paymentId);
+                    controller.insertReturn(idNum);
+                    JOptionPane.showMessageDialog(null, "Proses Return dilakukan untuk Payment ID: " + paymentId);
+                } else {
+                    // User memilih Cancel atau menutup dialog
+                    JOptionPane.showMessageDialog(null, "Proses Return dibatalkan.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Data tidak ditemukan untuk Payment ID: " + paymentId);
             }
-        } else {
-            // Jika pengguna membatalkan atau tidak memasukkan payment id
-            JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Payment ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } else {
+        // Jika pengguna membatalkan atau tidak memasukkan payment id
+        JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
     }
+}
+
 
     private void showSelectItemDialog(String category) {
         // Misalnya kita punya barang yang berbeda berdasarkan kategori yang dipilih

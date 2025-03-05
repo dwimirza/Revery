@@ -30,6 +30,12 @@ public interface interfaceRevery {
 
     public void updateItem(Item item1);
     
+    public void updateRentalStatus(int rentalId, String status);
+    
+    public void updatePaymentStatus(int paymentId, String status);
+    
+    public List<Returns> getReturnsByPaymentId(int paymentId);
+    
     public void updateCategory(Category category1);
 
     public void deleteItem(int itemId);

@@ -21,6 +21,7 @@ import gui.GUIHomepage;
 import gui.GUILoginpage;
 import static java.lang.Integer.parseInt;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -96,5 +97,40 @@ public class controllerHome{
         payment.setPaymentStatus(1);
         infcRevery.insertPayment(payment);
     }
+    public void insertReturn(int paymentId){
+        List<Returns> returnDataList = infcRevery.getReturnsByPaymentId(paymentId);
+
+    if (!returnDataList.isEmpty()) {
+        LocalDate currentDate = LocalDate.now();
+        Returns returnInfo = returnDataList.get(0); // Assuming only one record per payment
+
+        // Calculate Fee
+        long rentalDays = ChronoUnit.DAYS.between(returnInfo.getRentalDate(), currentDate);
+         double totalFee ;
+        if(rentalDays <= 0){
+            totalFee = returnInfo.getFee();
+        }else{
+            totalFee = rentalDays * returnInfo.getFee();
+        }
+        // Check if past due date
+        if (currentDate.isAfter(returnInfo.getReturnDate())) {
+            totalFee += 250000; // Add penalty if overdue
+        }
+
+        // Insert return record
+        Returns returnEntry = new Returns();
+        returnEntry.setPaymentId(paymentId);
+        returnEntry.setReturnDate(currentDate);
+        returnEntry.setFee(totalFee);
+        infcRevery.insertReturn(returnEntry);
+         
+        infcRevery.updateRentalStatus(returnInfo.getRentalId(), "2");
+
+        infcRevery.updatePaymentStatus(paymentId, "2");
+    } else {
+        JOptionPane.showMessageDialog(null, "No records found for Payment ID: " + paymentId);
+    }
+    }
+
     
 }

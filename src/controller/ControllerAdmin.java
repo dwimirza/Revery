@@ -24,10 +24,10 @@ public class ControllerAdmin {
         infcRevery = new daoItem();
     }
     
-    public void addCategory(String categoryName, int categoryId){
+    public void addCategory(String categoryName){
         Category category = new Category();
         category.setCatName(categoryName);
-        category.setId(categoryId);
+        
 
         infcRevery.insertCategory(category);
 //        JOptionPane.showMessageDialog(frame, "Berhasil menambahkan data baru");
