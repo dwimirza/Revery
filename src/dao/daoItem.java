@@ -231,36 +231,29 @@ public class daoItem implements interfaceRevery{
     
     
     @Override
-    public void updateItem(Item item1) {
-        PreparedStatement statement = null;
-        update = "UPDATE item SET name=?, categoryId=?, rentalPrice=?, stock=? WHERE itemId=? ;";
-        try {
-            statement = connection.prepareStatement(update);
-            statement.setString(1, item1.getItem());
-            statement.setInt(2, item1.getCatId());
-            statement.setDouble(3, item1.getRentPrice());
-            statement.setInt(4, item1.getStock());
-            statement.setInt(5, item1.getId());
-            statement.executeUpdate();
+    public void updateItem(String itemName, int categoryId, double rentPrice, int itemId) {
+    String sql = "UPDATE item SET name=?, categoryId=?, rentalPrice=? WHERE itemId=?";
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                statement.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }         
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        statement.setString(1, itemName);
+        statement.setInt(2, categoryId);
+        statement.setDouble(3, rentPrice);
+        statement.setInt(4, itemId);
+
+        statement.executeUpdate();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
     }
+}
+
     @Override
-    public void updateCategory(Category category1) {
+    public void updateCategory(String categoryName, int categoryId) {
         PreparedStatement statement = null;
         update = "UPDATE category SET categoryName=? WHERE categoryId=? ;";
         try {
             statement = connection.prepareStatement(update);
-            statement.setString(1, category1.getCatName());
-            statement.setInt(2, category1.getId());
+            statement.setString(1, categoryName);
+            statement.setInt(2, categoryId);
             statement.executeUpdate();
 
         } catch (SQLException ex) {
@@ -278,7 +271,7 @@ public class daoItem implements interfaceRevery{
     @Override
     public void deleteItem(int id) {
         PreparedStatement statement = null;
-        delete = "DELETE * FROM item where itemId = ?";
+        delete = "DELETE FROM item where itemId = ?";
         try {
             statement = connection.prepareStatement(delete);
             statement.setInt(1, id);
@@ -325,7 +318,7 @@ public class daoItem implements interfaceRevery{
     @Override
     public void deleteC(int id) {
         PreparedStatement statement = null;
-        delete = "DELETE * FROM category where categoryId = ?";
+        delete = "DELETE FROM category where categoryId = ?";
         try {
             statement = connection.prepareStatement(delete);
             statement.setInt(1, id);
@@ -353,6 +346,7 @@ public class daoItem implements interfaceRevery{
                 Item item1 = new Item();
                 item1.setId(rs.getInt("itemId"));
                 item1.setItem(rs.getString("name"));
+                item1.setCatId(rs.getInt("categoryId"));
                 item1.setRentPrice(rs.getDouble("rentalPrice"));
                 listItem.add(item1);
             }

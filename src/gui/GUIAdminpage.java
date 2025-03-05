@@ -273,8 +273,8 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void tambahKategori() {
-        ControllerAdmin controller = new ControllerAdmin(this); 
-        
+        ControllerAdmin controller = new ControllerAdmin(this);
+
         JTextField categoryNameField = new JTextField();
 
         JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
@@ -298,7 +298,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
         JTextField categoryIdField = new JTextField();
         JTextField rentalPriceField = new JTextField();
         JTextField stockField = new JTextField();
-        ControllerAdmin controller = new ControllerAdmin(this); 
+        ControllerAdmin controller = new ControllerAdmin(this);
 
         JPanel itemPanel = new JPanel(new GridLayout(5, 2));
         itemPanel.add(new JLabel("Item Name:"));
@@ -318,14 +318,14 @@ public class GUIAdminpage extends javax.swing.JFrame {
             String categoryId = categoryIdField.getText();
             double rentalPrice = Double.parseDouble(rentalPriceField.getText());
             int stock = Integer.parseInt(stockField.getText());
-            
+
             Item newItem = new Item();
-                newItem.setItem(itemName);
-                newItem.setCatId(Integer.parseInt(categoryId));
-                newItem.setRentPrice(rentalPrice);
-                newItem.setStock(stock);
-                controller.addItem(newItem);
-            
+            newItem.setItem(itemName);
+            newItem.setCatId(Integer.parseInt(categoryId));
+            newItem.setRentPrice(rentalPrice);
+            newItem.setStock(stock);
+            controller.addItem(newItem);
+
             // Simpan item ke database atau struktur data
 //            addItem(itemId, itemName, categoryId, rentalPrice, stock);
             JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
@@ -377,37 +377,105 @@ public class GUIAdminpage extends javax.swing.JFrame {
         }
     }
 
+    private void editKategori1(String categoryName, int categoryId) {
+    ControllerAdmin controller = new ControllerAdmin(this);
+
+    // Debug: Tampilkan nilai yang diterima
+    System.out.println("Mengedit kategori - ID: " + categoryId + ", Nama: " + categoryName);
+
+    // Mengisi field dengan nilai awal
+    JTextField categoryIdField = new JTextField(String.valueOf(categoryId));
+    categoryIdField.setEditable(false); // ID tidak bisa diubah
+    JTextField categoryNameField = new JTextField(categoryName);
+
+    // Membuat panel dengan input fields
+    JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
+    categoryPanel.add(new JLabel("Category ID:"));
+    categoryPanel.add(categoryIdField);
+    categoryPanel.add(new JLabel("Category Name:"));
+    categoryPanel.add(categoryNameField);
+
+    // Menampilkan dialog input
+    int result = JOptionPane.showConfirmDialog(null, categoryPanel,
+            "Edit Category", JOptionPane.OK_CANCEL_OPTION);
+
+    if (result == JOptionPane.OK_OPTION) {
+        String newCategoryName = categoryNameField.getText().trim();
+
+        // Validasi input (pastikan nama tidak kosong)
+        if (newCategoryName.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nama kategori tidak boleh kosong!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Debug: Tampilkan nilai baru
+        System.out.println("Nama baru: " + newCategoryName);
+
+        // Panggil controller untuk update kategori
+        controller.updateCategory(newCategoryName, categoryId);
+
+        // Konfirmasi kepada pengguna
+        JOptionPane.showMessageDialog(null, "Kategori berhasil diperbarui!", "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
+    
     private void editKategori() {
-        JTextField categoryIdField = new JTextField();
-        JTextField categoryNameField = new JTextField();
+        ControllerAdmin controller = new ControllerAdmin(this);
 
-        JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
-        categoryPanel.add(new JLabel("Category ID:"));
-        categoryPanel.add(categoryIdField);
-        categoryPanel.add(new JLabel("Category Name:"));
-        categoryPanel.add(categoryNameField);
+        // Ambil daftar item
+        List<Category> categories = controller.getCategories();
 
-        int result = JOptionPane.showConfirmDialog(null, categoryPanel,
-                "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
+        // Tampilkan item dalam format lengkap
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        for (Category category : categories) {
+            listModel.addElement(category.getId() + " - " + category.getCatName());
+        }
 
-        if (result == JOptionPane.OK_OPTION) {
-            String categoryId = categoryIdField.getText();
-            String categoryName = categoryNameField.getText();
+        // Buat JList
+        JList<String> itemList = new JList<>(listModel);
+        itemList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(itemList);
+        scrollPane.setPreferredSize(new Dimension(300, 150));
 
-            // Simpan kategori ke database atau struktur data
-//            addCategory(categoryId, categoryName);
-            JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
+        int option = JOptionPane.showConfirmDialog(null, scrollPane,
+                "Pilih kategori yang akan diubah",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (option == JOptionPane.OK_OPTION) {
+            String selectedValue = itemList.getSelectedValue();
+
+            if (selectedValue != null) {
+                try {
+                    // Pisahkan data item
+                    String[] parts = selectedValue.split(" - ");
+                    int categoryId = Integer.parseInt(parts[0]);
+                    String categoryName = parts[1];
+
+                    // Panggil editItem1
+                    editKategori1(categoryName, categoryId);
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Data item tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Pilih item terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Perubahan item dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
-    private void editItem() {
-        JTextField itemIdField = new JTextField();
-        JTextField nameItemField = new JTextField();
-        JTextField categoryIdField = new JTextField();
-        JTextField rentalPriceField = new JTextField();
-        JTextField stockField = new JTextField();
+    private void editItem1(String itemName, int categoryId, double rentPrice, int itemId) {
+        ControllerAdmin controller = new ControllerAdmin(this);
 
-        JPanel itemPanel = new JPanel(new GridLayout(5, 2));
+        // Form Input
+        JTextField itemIdField = new JTextField(String.valueOf(itemId));
+        itemIdField.setEditable(false); // ID tidak bisa diedit
+        JTextField nameItemField = new JTextField(itemName);
+        JTextField categoryIdField = new JTextField(String.valueOf(categoryId));
+        JTextField rentalPriceField = new JTextField(String.valueOf(rentPrice));
+
+        JPanel itemPanel = new JPanel(new GridLayout(4, 2));
         itemPanel.add(new JLabel("Item ID:"));
         itemPanel.add(itemIdField);
         itemPanel.add(new JLabel("Item Name:"));
@@ -416,22 +484,72 @@ public class GUIAdminpage extends javax.swing.JFrame {
         itemPanel.add(categoryIdField);
         itemPanel.add(new JLabel("Rental Price:"));
         itemPanel.add(rentalPriceField);
-        itemPanel.add(new JLabel("Stock:"));
-        itemPanel.add(stockField);
 
         int result = JOptionPane.showConfirmDialog(null, itemPanel,
-                "Input Item Data", JOptionPane.OK_CANCEL_OPTION);
+                "Edit Item Data", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-            String itemId = itemIdField.getText();
-            String itemName = nameItemField.getText();
-            String categoryId = categoryIdField.getText();
-            double rentalPrice = Double.parseDouble(rentalPriceField.getText());
-            int stock = Integer.parseInt(stockField.getText());
+            try {
+                itemName = nameItemField.getText();
+                categoryId = Integer.parseInt(categoryIdField.getText());
+                rentPrice = Double.parseDouble(rentalPriceField.getText());
 
-            // Simpan item ke database atau struktur data
-//            addItem(itemId, itemName, categoryId, rentalPrice, stock);
-            JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
+                // Update item
+                controller.updateItem(itemName, categoryId, rentPrice, itemId);
+                JOptionPane.showMessageDialog(null, "Item berhasil diperbarui!");
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Gagal memperbarui item: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void editItem() {
+        ControllerAdmin controller = new ControllerAdmin(this);
+
+        // Ambil daftar item
+        List<Item> items = controller.getItems();
+
+        // Tampilkan item dalam format lengkap
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        for (Item item : items) {
+            listModel.addElement(item.getId() + " - " + item.getItem() + " - " + item.getCatId() + " - " + item.getRentPrice());
+        }
+
+        // Buat JList
+        JList<String> itemList = new JList<>(listModel);
+        itemList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(itemList);
+        scrollPane.setPreferredSize(new Dimension(300, 150));
+
+        int option = JOptionPane.showConfirmDialog(null, scrollPane,
+                "Pilih item yang akan diubah",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (option == JOptionPane.OK_OPTION) {
+            String selectedValue = itemList.getSelectedValue();
+
+            if (selectedValue != null) {
+                try {
+                    // Pisahkan data item
+                    String[] parts = selectedValue.split(" - ");
+                    int itemId = Integer.parseInt(parts[0]);
+                    String itemName = parts[1];
+                    int categoryId = Integer.parseInt(parts[2]);
+                    double rentPrice = Double.parseDouble(parts[3]);
+
+                    // Panggil editItem1
+                    editItem1(itemName, categoryId, rentPrice, itemId);
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Data item tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Pilih item terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Perubahan item dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -481,48 +599,105 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void hapusKategori() {
-        daoItem dao1 = new daoItem();
-        JTextField categoryIdField = new JTextField();
+    ControllerAdmin controller = new ControllerAdmin(this);
 
-        JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
-        categoryPanel.add(new JLabel("Category ID:"));
-        categoryPanel.add(categoryIdField);
+    // Ambil daftar kategori
+    List<Category> categories = controller.getCategories();
 
-        int result = JOptionPane.showConfirmDialog(null, categoryPanel,
-                "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
+    // Buat array untuk menampilkan data kategori dalam format "categoryId - CategoryName"
+    DefaultListModel<String> listModel = new DefaultListModel<>();
+    for (Category category : categories) {
+        listModel.addElement(category.getId() + " - " + category.getCatName());
+    }
 
-        if (result == JOptionPane.OK_OPTION) {
-            String categoryIdText = categoryIdField.getText(); // Ambil teks dari field input
+    // Buat JList dengan model yang telah diisi
+    JList<String> categoryList = new JList<>(listModel);
+    categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    // Letakkan JList dalam JScrollPane
+    JScrollPane scrollPane = new JScrollPane(categoryList);
+    scrollPane.setPreferredSize(new Dimension(300, 200));
+
+    // Tampilkan dialog untuk memilih kategori yang akan dihapus
+    int option = JOptionPane.showConfirmDialog(null, scrollPane, 
+                                                "Pilih kategori yang akan dihapus", 
+                                                JOptionPane.OK_CANCEL_OPTION, 
+                                                JOptionPane.PLAIN_MESSAGE);
+
+    // Jika tombol OK ditekan dan ada kategori yang dipilih
+    if (option == JOptionPane.OK_OPTION) {
+        String selectedValue = categoryList.getSelectedValue();
+
+        if (selectedValue != null) {
+            // Ambil ID kategori dari hasil yang dipilih
+            String[] parts = selectedValue.split(" - ");
+            int categoryId = Integer.parseInt(parts[0]);
 
             try {
-                int categoryId = Integer.parseInt(categoryIdText); // Konversi ke integer
-                dao1.deleteC(categoryId); // Pastikan method delete menerima int
+                // Panggil controller untuk menghapus kategori
+                controller.deleteCategory(categoryId);
                 JOptionPane.showMessageDialog(null, "Kategori berhasil dihapus!");
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Kategori ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Gagal menghapus kategori: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih kategori terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
-
+    } else {
+        JOptionPane.showMessageDialog(null, "Penghapusan kategori dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
     }
+}
 
     private void hapusItem() {
-        JTextField itemIdField = new JTextField();
+    ControllerAdmin controller = new ControllerAdmin(this);
 
-        JPanel itemPanel = new JPanel(new GridLayout(2, 2));
-        itemPanel.add(new JLabel("Item ID:"));
-        itemPanel.add(itemIdField);
+    // Ambil daftar item
+    List<Item> items = controller.getItems();
 
-        int result = JOptionPane.showConfirmDialog(null, itemPanel,
-                "Input Item Data", JOptionPane.OK_CANCEL_OPTION);
-
-        if (result == JOptionPane.OK_OPTION) {
-            String itemId = itemIdField.getText();
-
-            // Simpan item ke database atau struktur data
-//            addItem(itemId, itemName, categoryId, rentalPrice, stock);
-            JOptionPane.showMessageDialog(null, "Item berhasil dihapus!");
-        }
+    // Buat array untuk menampilkan data item dalam format "itemId - itemName"
+    DefaultListModel<String> listModel = new DefaultListModel<>();
+    for (Item item : items) {
+        listModel.addElement(item.getId()+ " - " + item.getItem());
     }
+
+    // Buat JList dengan model yang telah diisi
+    JList<String> itemList = new JList<>(listModel);
+    itemList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    // Letakkan JList dalam JScrollPane
+    JScrollPane scrollPane = new JScrollPane(itemList);
+    scrollPane.setPreferredSize(new Dimension(300, 200));
+
+    // Tampilkan dialog untuk memilih item yang akan dihapus
+    int option = JOptionPane.showConfirmDialog(null, scrollPane, 
+                                                "Pilih item yang akan dihapus", 
+                                                JOptionPane.OK_CANCEL_OPTION, 
+                                                JOptionPane.PLAIN_MESSAGE);
+
+    // Jika tombol OK ditekan dan ada item yang dipilih
+    if (option == JOptionPane.OK_OPTION) {
+        String selectedValue = itemList.getSelectedValue();
+
+        if (selectedValue != null) {
+            // Ambil ID item dari hasil yang dipilih
+            String[] parts = selectedValue.split(" - ");
+            int itemId = Integer.parseInt(parts[0]);
+
+            try {
+                // Panggil controller untuk menghapus item
+                controller.deleteItem(itemId);
+                JOptionPane.showMessageDialog(null, "Item berhasil dihapus!");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Gagal menghapus item: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih item terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "Penghapusan item dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
+
 
     private String getDataItemAndCategory(String choice) {
         daoItem dao = new daoItem();

@@ -28,7 +28,7 @@ public interface interfaceRevery {
             
     public void insertReturn(Returns returns1);
 
-    public void updateItem(Item item1);
+    public void updateItem(String itemName, int categoryId, double rentPrice, int itemId);
     
     public void updateRentalStatus(int rentalId, String status);
     
@@ -36,7 +36,7 @@ public interface interfaceRevery {
     
     public List<Returns> getReturnsByPaymentId(int paymentId);
     
-    public void updateCategory(Category category1);
+    public void updateCategory(String categoryName, int categoryId);
 
     public void deleteItem(int itemId);
     
