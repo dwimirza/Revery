@@ -42,4 +42,7 @@ public interface interfaceRevery {
     
     public List<Category> getCategory();
     
+    public List<Returns> getReturns();
+    public List<Returns> getOneReturn(int id);
+    
 }

@@ -27,6 +27,7 @@ public class Revery {
             @Override
             public void run() {
                 // Initialize and show your GUIHomepage
+                objDB.setConnection();
                 new GUIHomepage(); // Assuming GUIHomepage is a JFrame or similar class
             }
         });

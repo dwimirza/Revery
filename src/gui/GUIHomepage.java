@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import model.Category;
 import model.Item;
+import model.Returns;
 
 /**
  *
@@ -24,6 +25,7 @@ public class GUIHomepage extends javax.swing.JFrame {
 
     private ArrayList<String> rentalUnits;
     private JLabel out_category;
+
     /**
      * Creates new form GUIHomepage
      */
@@ -56,76 +58,35 @@ public class GUIHomepage extends javax.swing.JFrame {
         btnReturn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Menampilkan dialog input untuk Payment ID
-                String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
-
-                if (paymentId != null && !paymentId.trim().isEmpty()) {
-                    // Panel untuk menampung field input
-                    JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5)); // 4 Baris, 2 Kolom, Spasi antar komponen
-
-                    // Label dan TextField untuk setiap detail
-                    panel.add(new JLabel("Nama Penyewa:"));
-                    JTextField nameField = new JTextField("John Doe"); // Contoh data
-                    nameField.setEditable(false);
-                    panel.add(nameField);
-
-                    panel.add(new JLabel("Barang Dipinjam:"));
-                    JTextField itemField = new JTextField("Laptop ASUS ROG");
-                    itemField.setEditable(false);
-                    panel.add(itemField);
-
-                    panel.add(new JLabel("Tanggal Meminjam:"));
-                    JTextField dateField = new JTextField("2024-02-20");
-                    dateField.setEditable(false);
-                    panel.add(dateField);
-
-                    panel.add(new JLabel("Status Pengembalian:"));
-                    JTextField statusField = new JTextField("Belum Dikembalikan"); // Kembali ke TextField
-                    statusField.setEditable(false);
-                    panel.add(statusField);
-
-                    // Custom Button Options
-                    Object[] options = {"Return", "Cancel"};
-
-                    // Menampilkan dialog dengan tombol "Return" dan "Cancel"
-                    int result = JOptionPane.showOptionDialog(null, panel, "Detail Pengembalian",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-
-                    // Cek tombol yang diklik
-                    if (result == 0) { // Jika tombol "Return" ditekan
-                        JOptionPane.showMessageDialog(null, "Pengembalian berhasil diproses.");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Pengembalian dibatalkan.");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
-                }
+                showReturnDialog();
             }
         });
 
 
     }
 
-     public void setOutCategory(int category){
+    public void setOutCategory(int category) {
         out_category.setText(Integer.toString(category));
-     }
+    }
 //    public void setOutItem(int item){
 //        out_item.setText(Integer.toString(item));
 //    }
-    public void setOutItem(int item){
+
+    public void setOutItem(int item) {
 //        out_item.setText(item);
     }
+
     private void showRentDialog() {
         JPanel panel = new JPanel(new BorderLayout()); // Menggunakan BorderLayout untuk menambahkan JScrollPane
-        
+
         //Manggil data 
         controllerHome controller = new controllerHome(this);
         List<Category> categories = controller.getCategories();
-        
-        rentalUnits = new ArrayList<>();    
+
+        rentalUnits = new ArrayList<>();
         rentalUnits.add(String.valueOf(out_category));
 //        rentalUnits.add(String.valueOf(out_item));
-        
+
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Category category : categories) {
             listModel.addElement(category.getId() + " - " + category.getCatName()); // Add category name
@@ -133,7 +94,7 @@ public class GUIHomepage extends javax.swing.JFrame {
 
         JList<String> rentalList = new JList<>(listModel);
         rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         // Membungkus JList dengan JScrollPane untuk mendukung scrolling
         JScrollPane scrollPane = new JScrollPane(rentalList);
 
@@ -166,14 +127,46 @@ public class GUIHomepage extends javax.swing.JFrame {
         }
     }
 
+    public void showReturnDialog() {
+        controllerHome controller = new controllerHome(this);
+
+        // Menampilkan dialog input untuk payment id
+        String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
+        if (paymentId != null && !paymentId.trim().isEmpty()) {
+            try {
+                List<Returns> returnDataList = controller.getOneReturn(paymentId);
+
+                if (!returnDataList.isEmpty()) {
+                    StringBuilder formattedOutput = new StringBuilder("<html>");
+                    for (Returns returnData : returnDataList) {
+                        formattedOutput.append("Nama Penyewa     : ").append(returnData.getBorrowerName()).append("<br>")
+                                .append("Barang Dipinjam  : ").append(returnData.getitemName()).append("<br>")
+                                .append("Tanggal Meminjam : ").append(returnData.getReturnDate()).append("<br>")
+                                .append("Status           : ").append(returnData.getStatus()).append("<br><br>");
+                    }
+                    formattedOutput.append("</html>");
+
+                    JOptionPane.showMessageDialog(null, formattedOutput.toString());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Data tidak ditemukan untuk Payment ID: " + paymentId);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Payment ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            // Jika pengguna membatalkan atau tidak memasukkan payment id
+            JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
+        }
+    }
+
     private void showSelectItemDialog(String category) {
         // Misalnya kita punya barang yang berbeda berdasarkan kategori yang dipilih
         controllerHome controller = new controllerHome(this);
         List<Item> items = controller.getItemByCat(category);
-        
+
         rentalUnits = new ArrayList<>();
 //        rentalUnits.add(String.valueOf(out_item));
-        
+
         String expectedCategory;
         expectedCategory = category;
 //        if (category.equalsIgnoreCase(expectedCategory)) {
@@ -245,8 +238,6 @@ public class GUIHomepage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Pemilihan barang dibatalkan.");
         }
     }
-
-
 
     /**
      * This method is called from within the constructor to initialize the form.

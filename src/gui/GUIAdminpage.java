@@ -4,6 +4,8 @@
  */
 package gui;
 
+import controller.ControllerAdmin;
+import controller.controllerHome;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -271,6 +273,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void tambahKategori() {
+        ControllerAdmin controller = new ControllerAdmin(this); 
         JTextField categoryIdField = new JTextField();
         JTextField categoryNameField = new JTextField();
 
@@ -284,9 +287,9 @@ public class GUIAdminpage extends javax.swing.JFrame {
                 "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-            String categoryId = categoryIdField.getText();
+            int categoryId = Integer.parseInt(categoryIdField.getText());
             String categoryName = categoryNameField.getText();
-
+            controller.addCategory(categoryName, categoryId);
             // Simpan kategori ke database atau struktur data
 //            addCategory(categoryId, categoryName);
             JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
@@ -477,53 +480,28 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void hapusKategori() {
-        controllerAdmin controller = new controllerAdmin(this);
+        daoItem dao1 = new daoItem();
+        JTextField categoryIdField = new JTextField();
 
-        // Ambil daftar kategori
-        List<Category> categories = controller.getCategories();
+        JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
+        categoryPanel.add(new JLabel("Category ID:"));
+        categoryPanel.add(categoryIdField);
 
-        // Buat array untuk menampilkan data kategori dalam format "categoryId - CategoryName"
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (Category category : categories) {
-            listModel.addElement(category.getId() + " - " + category.getCatName());
-        }
+        int result = JOptionPane.showConfirmDialog(null, categoryPanel,
+                "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
 
-        // Buat JList dengan model yang telah diisi
-        JList<String> categoryList = new JList<>(listModel);
-        categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String categoryIdText = categoryIdField.getText(); // Ambil teks dari field input
 
-        // Letakkan JList dalam JScrollPane
-        JScrollPane scrollPane = new JScrollPane(categoryList);
-        scrollPane.setPreferredSize(new Dimension(200, 100));
-
-        // Tampilkan dialog untuk memilih kategori yang akan dihapus
-        int option = JOptionPane.showConfirmDialog(null, scrollPane,
-                "Pilih kategori yang akan dihapus",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
-
-        // Jika tombol OK ditekan dan ada kategori yang dipilih
-        if (option == JOptionPane.OK_OPTION) {
-            String selectedValue = categoryList.getSelectedValue();
-
-            if (selectedValue != null) {
-                // Ambil ID kategori dari hasil yang dipilih
-                String[] parts = selectedValue.split(" - ");
-                int categoryId = Integer.parseInt(parts[0]);
-
-                try {
-                    // Panggil controller untuk menghapus kategori
-                    controller.deleteCategory(categoryId);
-                    JOptionPane.showMessageDialog(null, "Kategori berhasil dihapus!");
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Gagal menghapus kategori: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Pilih kategori terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                int categoryId = Integer.parseInt(categoryIdText); // Konversi ke integer
+                dao1.deleteC(categoryId); // Pastikan method delete menerima int
+                JOptionPane.showMessageDialog(null, "Kategori berhasil dihapus!");
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Kategori ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Penghapusan kategori dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
+
     }
 
     private void hapusItem() {
