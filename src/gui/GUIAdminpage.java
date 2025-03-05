@@ -539,7 +539,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
         // 🔹 Jika user memilih "Item", ambil item dari database
         if (choice.equalsIgnoreCase("Item")) {
-            List<Item> items = dao.getItem();
+            List<Item> items = dao.getItem("");
             List<String> itemNames = new ArrayList<>();
 
             for (Item item : items) {
