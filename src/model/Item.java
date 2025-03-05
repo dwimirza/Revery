@@ -12,7 +12,7 @@ public class Item {
     private int itemId;
     private String name;
     private int categoryId;
-    private int rentalPrice;
+    private Double rentalPrice;
     private int stock;
     
     // Getters
@@ -28,7 +28,7 @@ public class Item {
         return this.categoryId;
     }
 
-    public int getRentPrice(){
+    public Double getRentPrice(){
         return this.rentalPrice;
     }
 
@@ -49,7 +49,7 @@ public class Item {
         this.categoryId = categoryId;
     }
 
-    public void setRentPrice(int rentalPrice) {
+    public void setRentPrice(Double rentalPrice) {
         this.rentalPrice = rentalPrice;
     }
 

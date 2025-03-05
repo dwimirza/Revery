@@ -302,6 +302,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
         JTextField categoryIdField = new JTextField();
         JTextField rentalPriceField = new JTextField();
         JTextField stockField = new JTextField();
+        ControllerAdmin controller = new ControllerAdmin(this); 
 
         JPanel itemPanel = new JPanel(new GridLayout(5, 2));
         itemPanel.add(new JLabel("Item ID:"));
@@ -324,7 +325,15 @@ public class GUIAdminpage extends javax.swing.JFrame {
             String categoryId = categoryIdField.getText();
             double rentalPrice = Double.parseDouble(rentalPriceField.getText());
             int stock = Integer.parseInt(stockField.getText());
-
+            
+            Item newItem = new Item();
+                newItem.setId(Integer.parseInt(itemId));
+                newItem.setItem(itemName);
+                newItem.setCatId(Integer.parseInt(categoryId));
+                newItem.setRentPrice(rentalPrice);
+                newItem.setStock(stock);
+                controller.addItem(newItem);
+            
             // Simpan item ke database atau struktur data
 //            addItem(itemId, itemName, categoryId, rentalPrice, stock);
             JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
