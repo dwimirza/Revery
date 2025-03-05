@@ -134,7 +134,7 @@ public class GUIHomepage extends javax.swing.JFrame {
     private void showSelectItemDialog(String category) {
         // Misalnya kita punya barang yang berbeda berdasarkan kategori yang dipilih
         controllerHome controller = new controllerHome(this);
-        List<Item> items = controller.getItem(category);
+        List<Item> items = controller.getItemByCat(category);
         
         rentalUnits = new ArrayList<>();
 //        rentalUnits.add(String.valueOf(out_item));
@@ -237,11 +237,6 @@ public class GUIHomepage extends javax.swing.JFrame {
         btnRent.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnRent.setText("Rent");
         btnRent.setPreferredSize(new java.awt.Dimension(200, 100));
-        btnRent.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRentActionPerformed(evt);
-            }
-        });
 
         btnReturn.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnReturn.setText("Return");
