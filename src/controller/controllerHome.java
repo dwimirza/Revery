@@ -34,12 +34,21 @@ public class controllerHome{
         return infcRevery.getCategory();
     }
     
+    public List<Item> getItem(String category) {
+        return infcRevery.getItem(category);
+    }
+    
     public void showRentalC(Category category1){
         Home.setOutCategory(category1.getId());
 //        showSelectItemDialog(category1.getCatName());
     }
     
-    public void showRentalI(Rental rental1){
+    public void showRentalI(Item item1){
+        Home.setOutItem(item1.getId());
+//        showSelectItemDialog(category1.getCatName());
+    }
+    
+    public void showRentalR(Rental rental1){
         Home.setOutCategory(rental1.getRentalId());
     }
 }

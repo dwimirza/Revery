@@ -287,7 +287,7 @@ public class daoItem implements interfaceRevery{
             ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
                 Item item1 = new Item();
-                item1.setId(rs.getInt("id"));
+                item1.setId(rs.getInt("itemId"));
                 item1.setItem(rs.getString("name"));
                 item1.setRentPrice(rs.getInt("rentalPrice"));
                 item1.setStock(rs.getInt("stock"));
@@ -372,10 +372,7 @@ public class daoItem implements interfaceRevery{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public List<Item> getItem() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+   
 
     
 }
