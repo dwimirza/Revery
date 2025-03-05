@@ -312,6 +312,7 @@ public class daoItem implements interfaceRevery{
                 Item item1 = new Item();
                 item1.setId(rs.getInt("itemId"));
                 item1.setItem(rs.getString("name"));
+                item1.setCatId(rs.getInt("categoryId"));
                 item1.setRentPrice(rs.getInt("rentalPrice"));
                 item1.setStock(rs.getInt("stock"));
                 listItem.add(item1);
