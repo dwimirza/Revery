@@ -61,6 +61,8 @@ public class GUIHomepage extends javax.swing.JFrame {
                 showReturnDialog();
             }
         });
+
+
     }
 
     public void setOutCategory(int category) {
@@ -87,7 +89,7 @@ public class GUIHomepage extends javax.swing.JFrame {
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Category category : categories) {
-            listModel.addElement(category.getCatName()); // Add category name
+            listModel.addElement(category.getId() + " - " + category.getCatName()); // Add category name
         }
 
         JList<String> rentalList = new JList<>(listModel);
@@ -176,7 +178,7 @@ public class GUIHomepage extends javax.swing.JFrame {
         // Menyiapkan ListModel untuk JList
         DefaultListModel<String> itemListModel = new DefaultListModel<>();
         for (Item item : items) {
-            itemListModel.addElement(item.getItem());  // Menambahkan setiap item dalam list ke list model
+            itemListModel.addElement(item.getId() + " - " + item.getItem());  // Menambahkan setiap item dalam list ke list model
         }
 
         // Membuat JList untuk barang-barang berdasarkan kategori
