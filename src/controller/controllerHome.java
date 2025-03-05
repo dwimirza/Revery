@@ -34,8 +34,12 @@ public class controllerHome{
         return infcRevery.getCategory();
     }
     
-    public List<Item> getItem(String category) {
-        return infcRevery.getItem(category);
+    public List<Item> getItemByCat(String category) {
+        
+        return infcRevery.getItemByCat(category);
+    }
+    public List<Item> getItem() {
+        return infcRevery.getItem();
     }
     
     public void showRentalC(Category category1){
