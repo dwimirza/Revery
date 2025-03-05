@@ -4,6 +4,7 @@
  */
 package gui;
 
+import controller.ControllerAdmin;
 import controller.controllerHome;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -272,6 +273,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void tambahKategori() {
+        ControllerAdmin controller = new ControllerAdmin(this); 
         JTextField categoryIdField = new JTextField();
         JTextField categoryNameField = new JTextField();
 
@@ -285,9 +287,9 @@ public class GUIAdminpage extends javax.swing.JFrame {
                 "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-            String categoryId = categoryIdField.getText();
+            int categoryId = Integer.parseInt(categoryIdField.getText());
             String categoryName = categoryNameField.getText();
-
+            controller.addCategory(categoryName, categoryId);
             // Simpan kategori ke database atau struktur data
 //            addCategory(categoryId, categoryName);
             JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");

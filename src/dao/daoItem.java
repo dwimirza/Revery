@@ -33,7 +33,10 @@ public class daoItem implements interfaceRevery{
     private String update;
     private String delete;
     private String select;
-
+    
+    public daoItem(){
+        this.connection = setConnection();
+    }
     
     public Connection setConnection() {
         try{
@@ -104,6 +107,7 @@ public class daoItem implements interfaceRevery{
         }
     }
     
+    @Override
     public void insertCategory(Category category1){
         PreparedStatement statement = null;
         insert = "INSERT INTO category (categoryId,categoryName) VALUES (?, ?);";
@@ -379,6 +383,36 @@ public class daoItem implements interfaceRevery{
                 return1.setPaymentId(rs.getInt("paymentId"));
                 return1.setReturnDate(rs.getDate("returnDate").toLocalDate()); // Convert SQL Date to LocalDate
                 return1.setFee(rs.getInt("fee"));
+                listReturns.add(return1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(daoItem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return listReturns;
+    }
+    
+    
+    @Override
+    public List<Returns> getOneReturn(int id) {
+        setConnection();
+        List<Returns> listReturns = null;
+        select = "select r.borrowerName, i.name as itemName, r.rentalDate, r.rentalStatus from payments p \n" +
+                 "join rentals r on r.rentalId = p.rentalId \n" +
+                 "join item i on i.itemId = r.itemId\n" +
+                 "where p.paymentId = ?";
+        
+        try {
+            listReturns = new ArrayList<Returns>();
+            PreparedStatement st = connection.prepareStatement(select);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Returns return1 = new Returns();
+                return1.setBorrowerName(rs.getString("borrowerName"));
+                return1.setItemName(rs.getString("itemName"));
+                return1.setReturnDate(rs.getDate("rentalDate").toLocalDate()); // Convert SQL Date to LocalDate
+                return1.setStatus(rs.getString("rentalStatus"));
                 listReturns.add(return1);
             }
         } catch (SQLException ex) {
