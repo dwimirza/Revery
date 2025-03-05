@@ -62,7 +62,6 @@ public class GUIHomepage extends javax.swing.JFrame {
             }
         });
 
-
     }
 
     public void setOutCategory(int category) {
@@ -146,7 +145,22 @@ public class GUIHomepage extends javax.swing.JFrame {
                     }
                     formattedOutput.append("</html>");
 
-                    JOptionPane.showMessageDialog(null, formattedOutput.toString());
+                    // Membuat array untuk opsi button
+                    Object[] options = {"Return", "Cancel"};
+
+                    // Menampilkan dialog dengan opsi button Return dan Cancel
+                    int choice = JOptionPane.showOptionDialog(null, formattedOutput.toString(), "Return Details",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+                    // Menangani pilihan user
+                    if (choice == 0) {
+                        // User memilih Return
+                        // Lakukan aksi yang diperlukan untuk proses return
+                        JOptionPane.showMessageDialog(null, "Proses Return dilakukan untuk Payment ID: " + paymentId);
+                    } else {
+                        // User memilih Cancel atau menutup dialog
+                        JOptionPane.showMessageDialog(null, "Proses Return dibatalkan.");
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Data tidak ditemukan untuk Payment ID: " + paymentId);
                 }
