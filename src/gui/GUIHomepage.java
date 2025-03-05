@@ -163,7 +163,6 @@ public class GUIHomepage extends javax.swing.JFrame {
         // Misalnya kita punya barang yang berbeda berdasarkan kategori yang dipilih
         controllerHome controller = new controllerHome(this);
         List<Item> items = controller.getItemByCat(category);
-
         rentalUnits = new ArrayList<>();
 //        rentalUnits.add(String.valueOf(out_item));
 
@@ -202,18 +201,21 @@ public class GUIHomepage extends javax.swing.JFrame {
             String selectedItem = itemList.getSelectedValue();
             if (selectedItem != null && !selectedItem.equals("null")) {
                 // Membuat panel untuk input
-                JPanel panel = new JPanel(new GridLayout(3, 2)); // 3 baris, 2 kolom
+                JPanel panel = new JPanel(new GridLayout(4, 2)); // 3 baris, 2 kolom
                 JTextField namaField = new JTextField();
                 JTextField tanggalPinjamField = new JTextField();
                 JTextField tanggalKembaliField = new JTextField();
+                JTextField paymentMethodField = new JTextField();
 
                 // Menambahkan komponen ke panel
                 panel.add(new JLabel("Name:"));
                 panel.add(namaField);
-                panel.add(new JLabel("Rent Date (DD/MM/YYYY):"));
+                panel.add(new JLabel("Rent Date (YYYY-MM-DD):"));
                 panel.add(tanggalPinjamField);
-                panel.add(new JLabel("Return Date (DD/MM/YYYY):"));
+                panel.add(new JLabel("Return Date (YYYY-MM-DD):"));
                 panel.add(tanggalKembaliField);
+                panel.add(new JLabel("Payment Method:"));
+                panel.add(paymentMethodField);
 
                 // Menampilkan dialog dengan panel
                 int result = JOptionPane.showConfirmDialog(null, panel, "Input Detail Peminjaman", JOptionPane.OK_CANCEL_OPTION);
@@ -222,6 +224,8 @@ public class GUIHomepage extends javax.swing.JFrame {
                     String namaPeminjam = namaField.getText();
                     String tanggalMeminjam = tanggalPinjamField.getText();
                     String tanggalPengembalian = tanggalKembaliField.getText();
+                    String paymentMethod = paymentMethodField.getText();
+                    controller.addData(namaPeminjam,tanggalMeminjam,tanggalPengembalian,selectedItem, paymentMethod);
 
                     // Menampilkan hasil
                     String message = "Detail Peminjaman:\n"
@@ -263,6 +267,11 @@ public class GUIHomepage extends javax.swing.JFrame {
         btnRent.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnRent.setText("Rent");
         btnRent.setPreferredSize(new java.awt.Dimension(200, 100));
+        btnRent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRentActionPerformed(evt);
+            }
+        });
 
         btnReturn.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnReturn.setText("Return");

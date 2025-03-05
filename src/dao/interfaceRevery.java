@@ -24,7 +24,7 @@ public interface interfaceRevery {
     
     public void insertPayment(Payment payment1);
         
-    public void insertRental(Rental rental1);
+    public int insertRental(Rental rental1);
             
     public void insertReturn(Returns returns1);
 
