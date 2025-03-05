@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Admin;
 import model.Category;
 import model.Item;
 import model.Payment;
@@ -190,30 +191,76 @@ public class daoItem implements interfaceRevery{
     
     
     
-//    public void update(Film film1) {
-//        PreparedStatement statement = null;
-//        try {
-//            statement = connection.prepareStatement(update);
-//            statement.setString(1, film1.getJudul());
-//            statement.setString(2, film1.getSinopsis());
-//            statement.setInt(3, film1.getTahun());
-//            statement.setInt(4, film1.getId());
-//            statement.executeUpdate();
-//
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            try {
-//                statement.close();
-//            } catch (SQLException ex) {
-//                ex.printStackTrace();
-//            }
-//        }         
-//    }
+    @Override
+    public void updateItem(Item item1) {
+        PreparedStatement statement = null;
+        update = "UPDATE item SET name=?, categoryId=?, rentalPrice=?, stock=? WHERE itemId=? ;";
+        try {
+            statement = connection.prepareStatement(update);
+            statement.setString(1, item1.getItem());
+            statement.setInt(2, item1.getCatId());
+            statement.setInt(3, item1.getRentPrice());
+            statement.setInt(4, item1.getStock());
+            statement.setInt(5, item1.getId());
+            statement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }         
+    }
+    @Override
+    public void updateCategory(Category category1) {
+        PreparedStatement statement = null;
+        update = "UPDATE category SET categoryName=? WHERE categoryId=? ;";
+        try {
+            statement = connection.prepareStatement(update);
+            statement.setString(1, category1.getCatName());
+            statement.setInt(2, category1.getId());
+            statement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }         
+    }
 
     
-    public void delete(int id) {
+    @Override
+    public void deleteItem(int id) {
         PreparedStatement statement = null;
+        delete = "DELETE * FROM item where itemId = ?";
+        try {
+            statement = connection.prepareStatement(delete);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    
+    @Override
+    public void deleteC(int id) {
+        PreparedStatement statement = null;
+        delete = "DELETE * FROM category where categoryId = ?";
         try {
             statement = connection.prepareStatement(delete);
             statement.setInt(1, id);
@@ -230,12 +277,13 @@ public class daoItem implements interfaceRevery{
         }
     }
 
-    public List<Item> getItem() {
+    public List<Item> getItem(String category) {
         List<Item> listItem = null;
-        select = "SELECT * FROM item";
+        select = "SELECT * FROM item where categoryId = ? ";
         try {
             listItem = new ArrayList<Item>();
-            Statement st = connection.createStatement();
+            PreparedStatement st = connection.prepareStatement(select);
+            st.setString(1, category);
             ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
                 Item item1 = new Item();
@@ -325,17 +373,9 @@ public class daoItem implements interfaceRevery{
     }
 
     @Override
-    public void updateItem(Item item1) {
+    public List<Item> getItem() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public void updateCategory(Category category1) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void deleteC(int categoryId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 }
