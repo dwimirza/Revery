@@ -10,15 +10,10 @@ package controller;
  */
 import dao.daoItem;
 import dao.interfaceRevery;
-import model.Admin;
 import model.Category;
 import model.Item;
-import model.Payment;
 import model.Rental;
-import model.Returns;
-import gui.GUIAdminpage;
 import gui.GUIHomepage;
-import gui.GUILoginpage;
 import java.util.List;
 
 public class controllerHome{
