@@ -13,10 +13,12 @@ import java.time.LocalDate;
 public class Returns {
     private int returnId;
     private int paymentId;
+    private int rentalId;
     private String borrowerName;
     private String itemName;    
     private LocalDate returnDate;
-    private int fee;
+    private LocalDate rentalDate;
+    private Double fee;
     private String status;
     
 // Getters
@@ -26,6 +28,9 @@ public class Returns {
 
     public int getPaymentId() {
         return this.paymentId;
+    }
+    public int getRentalId() {
+        return this.rentalId;
     }
     
     public String getBorrowerName() {
@@ -39,8 +44,11 @@ public class Returns {
     public LocalDate getReturnDate() {
         return this.returnDate;
     }
+    public LocalDate getRentalDate() {
+        return this.rentalDate;
+    }
 
-    public int getFee() {
+    public Double getFee() {
         return this.fee;
     }
     
@@ -51,6 +59,9 @@ public class Returns {
     // Setters
     public void setReturnId(int returnId) {
         this.returnId = returnId;
+    }
+    public void setRentalId(int rentalId) {
+        this.rentalId = rentalId;
     }
 
     public void setPaymentId(int paymentId) {
@@ -66,8 +77,11 @@ public class Returns {
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
+    public void setRentalDate(LocalDate rentalDate) {
+        this.rentalDate = rentalDate;
+    }
 
-    public void setFee(int fee) {
+    public void setFee(Double fee) {
         this.fee = fee;
     }
     public void setStatus(String status) {

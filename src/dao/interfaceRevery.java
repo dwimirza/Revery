@@ -24,11 +24,17 @@ public interface interfaceRevery {
     
     public void insertPayment(Payment payment1);
         
-    public void insertRental(Rental rental1);
+    public int insertRental(Rental rental1);
             
     public void insertReturn(Returns returns1);
 
     public void updateItem(Item item1);
+    
+    public void updateRentalStatus(int rentalId, String status);
+    
+    public void updatePaymentStatus(int paymentId, String status);
+    
+    public List<Returns> getReturnsByPaymentId(int paymentId);
     
     public void updateCategory(Category category1);
 

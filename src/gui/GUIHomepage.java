@@ -62,6 +62,7 @@ public class GUIHomepage extends javax.swing.JFrame {
             }
         });
 
+
     }
 
     public void setOutCategory(int category) {
@@ -127,57 +128,63 @@ public class GUIHomepage extends javax.swing.JFrame {
     }
 
     public void showReturnDialog() {
-        controllerHome controller = new controllerHome(this);
+    controllerHome controller = new controllerHome(this);
 
-        // Menampilkan dialog input untuk payment id
-        String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
-        if (paymentId != null && !paymentId.trim().isEmpty()) {
-            try {
-                List<Returns> returnDataList = controller.getOneReturn(paymentId);
+    // Menampilkan dialog input untuk payment id
+    String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
+    
+    if (paymentId != null && !paymentId.trim().isEmpty()) {
+        try {
+            List<Returns> returnDataList = controller.getOneReturn(paymentId);
 
-                if (!returnDataList.isEmpty()) {
-                    StringBuilder formattedOutput = new StringBuilder("<html>");
-                    for (Returns returnData : returnDataList) {
-                        formattedOutput.append("Nama Penyewa     : ").append(returnData.getBorrowerName()).append("<br>")
-                                .append("Barang Dipinjam  : ").append(returnData.getitemName()).append("<br>")
-                                .append("Tanggal Meminjam : ").append(returnData.getReturnDate()).append("<br>")
-                                .append("Status           : ").append(returnData.getStatus()).append("<br><br>");
-                    }
-                    formattedOutput.append("</html>");
-
-                    // Membuat array untuk opsi button
-                    Object[] options = {"Return", "Cancel"};
-
-                    // Menampilkan dialog dengan opsi button Return dan Cancel
-                    int choice = JOptionPane.showOptionDialog(null, formattedOutput.toString(), "Return Details",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-
-                    // Menangani pilihan user
-                    if (choice == 0) {
-                        // User memilih Return
-                        // Lakukan aksi yang diperlukan untuk proses return
-                        JOptionPane.showMessageDialog(null, "Proses Return dilakukan untuk Payment ID: " + paymentId);
-                    } else {
-                        // User memilih Cancel atau menutup dialog
-                        JOptionPane.showMessageDialog(null, "Proses Return dibatalkan.");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Data tidak ditemukan untuk Payment ID: " + paymentId);
+            if (!returnDataList.isEmpty()) {
+                StringBuilder formattedOutput = new StringBuilder("<html>");
+                
+                for (Returns returnData : returnDataList) {
+                    formattedOutput.append("Nama Penyewa     : ").append(returnData.getBorrowerName()).append("<br>")
+                            .append("Barang Dipinjam  : ").append(returnData.getitemName()).append("<br>")
+                            .append("Tanggal Meminjam : ").append(returnData.getRentalDate()).append("<br>")
+                            .append("Status           : ").append(returnData.getStatus()).append("<br><br>");
                 }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Payment ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+                formattedOutput.append("</html>");
+
+                // Menampilkan detail return
+                JOptionPane.showMessageDialog(null, formattedOutput.toString());
+
+                // Membuat array untuk opsi button
+                Object[] options = {"Return", "Cancel"};
+
+                // Menampilkan dialog dengan opsi button Return dan Cancel
+                int choice = JOptionPane.showOptionDialog(null, formattedOutput.toString(), "Return Details",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+                // Menangani pilihan user
+                if (choice == 0) {
+                    // User memilih Return
+                    int idNum = Integer.parseInt(paymentId);
+                    controller.insertReturn(idNum);
+                    JOptionPane.showMessageDialog(null, "Proses Return dilakukan untuk Payment ID: " + paymentId);
+                } else {
+                    // User memilih Cancel atau menutup dialog
+                    JOptionPane.showMessageDialog(null, "Proses Return dibatalkan.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Data tidak ditemukan untuk Payment ID: " + paymentId);
             }
-        } else {
-            // Jika pengguna membatalkan atau tidak memasukkan payment id
-            JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Payment ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } else {
+        // Jika pengguna membatalkan atau tidak memasukkan payment id
+        JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
     }
+}
+
 
     private void showSelectItemDialog(String category) {
         // Misalnya kita punya barang yang berbeda berdasarkan kategori yang dipilih
         controllerHome controller = new controllerHome(this);
         List<Item> items = controller.getItemByCat(category);
-
         rentalUnits = new ArrayList<>();
 //        rentalUnits.add(String.valueOf(out_item));
 
@@ -216,18 +223,21 @@ public class GUIHomepage extends javax.swing.JFrame {
             String selectedItem = itemList.getSelectedValue();
             if (selectedItem != null && !selectedItem.equals("null")) {
                 // Membuat panel untuk input
-                JPanel panel = new JPanel(new GridLayout(3, 2)); // 3 baris, 2 kolom
+                JPanel panel = new JPanel(new GridLayout(4, 2)); // 3 baris, 2 kolom
                 JTextField namaField = new JTextField();
                 JTextField tanggalPinjamField = new JTextField();
                 JTextField tanggalKembaliField = new JTextField();
+                JTextField paymentMethodField = new JTextField();
 
                 // Menambahkan komponen ke panel
                 panel.add(new JLabel("Name:"));
                 panel.add(namaField);
-                panel.add(new JLabel("Rent Date (DD/MM/YYYY):"));
+                panel.add(new JLabel("Rent Date (YYYY-MM-DD):"));
                 panel.add(tanggalPinjamField);
-                panel.add(new JLabel("Return Date (DD/MM/YYYY):"));
+                panel.add(new JLabel("Return Date (YYYY-MM-DD):"));
                 panel.add(tanggalKembaliField);
+                panel.add(new JLabel("Payment Method:"));
+                panel.add(paymentMethodField);
 
                 // Menampilkan dialog dengan panel
                 int result = JOptionPane.showConfirmDialog(null, panel, "Input Detail Peminjaman", JOptionPane.OK_CANCEL_OPTION);
@@ -236,6 +246,8 @@ public class GUIHomepage extends javax.swing.JFrame {
                     String namaPeminjam = namaField.getText();
                     String tanggalMeminjam = tanggalPinjamField.getText();
                     String tanggalPengembalian = tanggalKembaliField.getText();
+                    String paymentMethod = paymentMethodField.getText();
+                    controller.addData(namaPeminjam,tanggalMeminjam,tanggalPengembalian,selectedItem, paymentMethod);
 
                     // Menampilkan hasil
                     String message = "Detail Peminjaman:\n"
@@ -277,6 +289,11 @@ public class GUIHomepage extends javax.swing.JFrame {
         btnRent.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnRent.setText("Rent");
         btnRent.setPreferredSize(new java.awt.Dimension(200, 100));
+        btnRent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRentActionPerformed(evt);
+            }
+        });
 
         btnReturn.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnReturn.setText("Return");

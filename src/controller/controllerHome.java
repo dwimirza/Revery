@@ -20,6 +20,9 @@ import gui.GUIAdminpage;
 import gui.GUIHomepage;
 import gui.GUILoginpage;
 import static java.lang.Integer.parseInt;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -37,9 +40,14 @@ public class controllerHome{
     }
     
     public List<Item> getItemByCat(String category) {
-        
-        return infcRevery.getItemByCat(category);
+         String[] parts = category.split(" - "); // Pisahkan berdasarkan " - "
+    if (parts.length > 1) {
+        String categoryId = parts[0]; // Ambil ID kategori
+        return infcRevery.getItemByCat(categoryId);
     }
+    return new ArrayList<>(); // Jika format salah, kembalikan list kosong
+    }
+    
     public List<Item> getItem() {
         return infcRevery.getItem();
     }
@@ -61,4 +69,68 @@ public class controllerHome{
     public void showRentalR(Rental rental1){
         Home.setOutCategory(rental1.getRentalId());
     }
+    
+    public void addData(String namaPeminjam,String tanggalMeminjam,String tanggalPengembalian,String selectedItem,String paymentMethod){
+        String id = null;
+        LocalDate localDate = LocalDate.parse(tanggalMeminjam);
+        LocalDate localDate1 = LocalDate.parse(tanggalPengembalian);
+         String[] parts = selectedItem.split(" - "); // Pisahkan berdasarkan " - "
+    if (parts.length > 1) {
+         id = parts[0]; // Ambil ID kategori
+    }
+        Rental rental = new Rental();
+        rental.setBorrowerName(namaPeminjam);
+        rental.setRentalDate(localDate);
+        rental.setReturnDate(localDate);
+        rental.setItemId(Integer.parseInt(id));
+        rental.setRentalStatus(1);
+        
+        
+        int rentalId = infcRevery.insertRental(rental);
+        if (rentalId == -1) {
+            System.out.println("Failed to insert rental.");
+            return;
+        }
+        Payment payment = new Payment();
+        payment.setPaymentMethod(paymentMethod);
+        payment.setRentalId(rentalId);
+        payment.setPaymentStatus(1);
+        infcRevery.insertPayment(payment);
+    }
+    public void insertReturn(int paymentId){
+        List<Returns> returnDataList = infcRevery.getReturnsByPaymentId(paymentId);
+
+    if (!returnDataList.isEmpty()) {
+        LocalDate currentDate = LocalDate.now();
+        Returns returnInfo = returnDataList.get(0); // Assuming only one record per payment
+
+        // Calculate Fee
+        long rentalDays = ChronoUnit.DAYS.between(returnInfo.getRentalDate(), currentDate);
+         double totalFee ;
+        if(rentalDays <= 0){
+            totalFee = returnInfo.getFee();
+        }else{
+            totalFee = rentalDays * returnInfo.getFee();
+        }
+        // Check if past due date
+        if (currentDate.isAfter(returnInfo.getReturnDate())) {
+            totalFee += 250000; // Add penalty if overdue
+        }
+
+        // Insert return record
+        Returns returnEntry = new Returns();
+        returnEntry.setPaymentId(paymentId);
+        returnEntry.setReturnDate(currentDate);
+        returnEntry.setFee(totalFee);
+        infcRevery.insertReturn(returnEntry);
+         
+        infcRevery.updateRentalStatus(returnInfo.getRentalId(), "2");
+
+        infcRevery.updatePaymentStatus(paymentId, "2");
+    } else {
+        JOptionPane.showMessageDialog(null, "No records found for Payment ID: " + paymentId);
+    }
+    }
+
+    
 }

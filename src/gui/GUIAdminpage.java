@@ -274,12 +274,10 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
     private void tambahKategori() {
         ControllerAdmin controller = new ControllerAdmin(this); 
-        JTextField categoryIdField = new JTextField();
+        
         JTextField categoryNameField = new JTextField();
 
         JPanel categoryPanel = new JPanel(new GridLayout(2, 2));
-        categoryPanel.add(new JLabel("Category ID:"));
-        categoryPanel.add(categoryIdField);
         categoryPanel.add(new JLabel("Category Name:"));
         categoryPanel.add(categoryNameField);
 
@@ -287,9 +285,8 @@ public class GUIAdminpage extends javax.swing.JFrame {
                 "Input Category Data", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-            int categoryId = Integer.parseInt(categoryIdField.getText());
             String categoryName = categoryNameField.getText();
-            controller.addCategory(categoryName, categoryId);
+            controller.addCategory(categoryName);
             // Simpan kategori ke database atau struktur data
 //            addCategory(categoryId, categoryName);
             JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
@@ -297,15 +294,13 @@ public class GUIAdminpage extends javax.swing.JFrame {
     }
 
     private void tambahItem() {
-        JTextField itemIdField = new JTextField();
         JTextField nameItemField = new JTextField();
         JTextField categoryIdField = new JTextField();
         JTextField rentalPriceField = new JTextField();
         JTextField stockField = new JTextField();
+        ControllerAdmin controller = new ControllerAdmin(this); 
 
         JPanel itemPanel = new JPanel(new GridLayout(5, 2));
-        itemPanel.add(new JLabel("Item ID:"));
-        itemPanel.add(itemIdField);
         itemPanel.add(new JLabel("Item Name:"));
         itemPanel.add(nameItemField);
         itemPanel.add(new JLabel("Category ID:"));
@@ -319,12 +314,18 @@ public class GUIAdminpage extends javax.swing.JFrame {
                 "Input Item Data", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-            String itemId = itemIdField.getText();
             String itemName = nameItemField.getText();
             String categoryId = categoryIdField.getText();
             double rentalPrice = Double.parseDouble(rentalPriceField.getText());
             int stock = Integer.parseInt(stockField.getText());
-
+            
+            Item newItem = new Item();
+                newItem.setItem(itemName);
+                newItem.setCatId(Integer.parseInt(categoryId));
+                newItem.setRentPrice(rentalPrice);
+                newItem.setStock(stock);
+                controller.addItem(newItem);
+            
             // Simpan item ke database atau struktur data
 //            addItem(itemId, itemName, categoryId, rentalPrice, stock);
             JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");

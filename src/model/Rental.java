@@ -17,7 +17,6 @@ public class Rental {
     private int itemId;
     private LocalDate rentalDate;
     private LocalDate returnDate;
-    private int totalPrice;
     private int rentalStatus;
 
     // Getters
@@ -39,10 +38,6 @@ public class Rental {
 
     public LocalDate getReturnDate() {
         return this.returnDate;
-    }
-
-    public int getTotalPrice() {
-        return this.totalPrice;
     }
 
     public int getRentalStatus() {
@@ -68,10 +63,6 @@ public class Rental {
 
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
-    }
-
-    public void setTotalPrice(int totalPrice) {
-        this.totalPrice = totalPrice;
     }
 
     public void setRentalStatus(int rentalStatus) {

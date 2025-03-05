@@ -9,6 +9,7 @@ import dao.interfaceRevery;
 import gui.GUIAdminpage;
 import gui.GUIHomepage;
 import model.Category;
+import model.Item;
 
 /**
  *
@@ -23,14 +24,18 @@ public class ControllerAdmin {
         infcRevery = new daoItem();
     }
     
-    public void addCategory(String categoryName, int categoryId){
+    public void addCategory(String categoryName){
         Category category = new Category();
         category.setCatName(categoryName);
-        category.setId(categoryId);
+        
 
         infcRevery.insertCategory(category);
 //        JOptionPane.showMessageDialog(frame, "Berhasil menambahkan data baru");
 //        
 //        kembali();
+    }
+    
+    public void addItem(Item item) {
+    infcRevery.insertItem(item); // Pass the object to the DAO
     }
 }

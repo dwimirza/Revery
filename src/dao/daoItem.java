@@ -87,14 +87,13 @@ public class daoItem implements interfaceRevery{
     @Override
     public void insertItem(Item item1) {
         PreparedStatement statement = null;
-        insert = "INSERT INTO item (itemId, name, categoryId, rentLPrice, stock) VALUES (?, ?, ?, ?, ?);";
+        insert = "INSERT INTO item (itemId, name, categoryId, rentalPrice) VALUES (?, ?, ?, ?);";
         try {
             statement = connection.prepareStatement(insert);
             statement.setString(1, String.valueOf(item1.getId()));
             statement.setString(2, item1.getItem());
             statement.setInt(3, item1.getCatId());
-            statement.setInt(4, item1.getRentPrice());
-            statement.setInt(5, item1.getStock());
+            statement.setDouble(4, item1.getRentPrice());
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -110,11 +109,10 @@ public class daoItem implements interfaceRevery{
     @Override
     public void insertCategory(Category category1){
         PreparedStatement statement = null;
-        insert = "INSERT INTO category (categoryId,categoryName) VALUES (?, ?);";
+        insert = "INSERT INTO category (categoryName) VALUES (?);";
         try {
             statement = connection.prepareStatement(insert);
-            statement.setString(1, String.valueOf(category1.getId()));
-            statement.setString(2, category1.getCatName());
+            statement.setString(1, category1.getCatName());
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -129,13 +127,12 @@ public class daoItem implements interfaceRevery{
     
     public void insertPayment(Payment payment1){
         PreparedStatement statement = null;
-        insert = "INSERT INTO payments (paymentId,rentalId,paymentMethod,paymentStatus) VALUES (?, ?, ?, ?);";
+        insert = "INSERT INTO payments (rentalId,paymentMethod,paymentStatus) VALUES (?, ?, ?);";
         try {
             statement = connection.prepareStatement(insert);
-            statement.setString(1, String.valueOf(payment1.getPaymentId()));
-            statement.setString(2, String.valueOf(payment1.getRentalId()));
-            statement.setString(3, payment1.getPaymentMethod());
-            statement.setString(4, String.valueOf(payment1.getPaymentStatus()));
+            statement.setString(1, String.valueOf(payment1.getRentalId()));
+            statement.setString(2, payment1.getPaymentMethod());
+            statement.setInt(3, payment1.getPaymentStatus());
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -148,39 +145,77 @@ public class daoItem implements interfaceRevery{
         }
     }
     
-    public void insertRental(Rental rental1) {
-        PreparedStatement statement = null;
-        insert = "INSERT INTO rentals (rentalId, borrowerName, itemId, rentalDate, returnDate, totalPrice, rentalStatus) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        try {
-            statement = connection.prepareStatement(insert);
-            statement.setInt(1, rental1.getRentalId());
-            statement.setString(2, rental1.getBorrowerName());
-            statement.setString(3, String.valueOf(rental1.getItemId()));  // Convert String itemId to int
-            statement.setDate(4, Date.valueOf(rental1.getRentalDate())); // Convert LocalDate to SQL Date
-            statement.setDate(5, Date.valueOf(rental1.getReturnDate())); // Convert LocalDate to SQL Date
-            statement.setInt(6, rental1.getTotalPrice());
-            statement.setInt(7, rental1.getRentalStatus());
-            statement.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) statement.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+    public int insertRental(Rental rental1) {
+    PreparedStatement statement = null;
+    ResultSet generatedKeys = null;
+    String insert = "INSERT INTO rentals (borrowerName, itemId, rentalDate, returnDate, rentalStatus) VALUES (?, ?, ?, ?, ?);";
+
+    try {
+        statement = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, rental1.getBorrowerName());
+        statement.setInt(2, rental1.getItemId());
+        statement.setDate(3, Date.valueOf(rental1.getRentalDate())); 
+        statement.setDate(4, Date.valueOf(rental1.getReturnDate()));
+        statement.setInt(5, rental1.getRentalStatus());
+        
+        int affectedRows = statement.executeUpdate();
+
+        if (affectedRows > 0) {
+            generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1); // Return the generated rentalId
             }
         }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    } finally {
+        try {
+            if (generatedKeys != null) generatedKeys.close();
+            if (statement != null) statement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    return -1; // Return -1 if insertion fails
+}
+    public List<Returns> getReturnsByPaymentId(int paymentId) {
+    List<Returns> returnList = new ArrayList<>();
+    String query = "SELECT r.borrowerName, i.name AS itemName, r.rentalDate, r.returnDate, r.rentalStatus, i.rentalPrice, r.rentalId " +
+                   "FROM payments p " +
+                   "JOIN rentals r ON r.rentalId = p.rentalId " +
+                   "JOIN item i ON i.itemId = r.itemId " +
+                   "WHERE p.paymentId = ?";
+
+    try (PreparedStatement st = connection.prepareStatement(query)) {
+        st.setInt(1, paymentId);
+        ResultSet rs = st.executeQuery();
+        
+        while (rs.next()) {
+            Returns returnData = new Returns();
+            returnData.setBorrowerName(rs.getString("borrowerName"));
+            returnData.setItemName(rs.getString("itemName"));
+            returnData.setRentalId(rs.getInt("rentalId"));
+            returnData.setRentalDate(rs.getDate("rentalDate").toLocalDate());
+            returnData.setReturnDate(rs.getDate("returnDate").toLocalDate());
+            returnData.setStatus(rs.getString("rentalStatus"));
+            returnData.setFee(rs.getDouble("rentalPrice"));
+            
+            returnList.add(returnData);
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return returnList;
     }
     
     public void insertReturn(Returns return1) {
         PreparedStatement statement = null;
-        insert = "INSERT INTO returns (returnId, paymentId, returnDate, fee) VALUES (?, ?, ?, ?);";
+        insert = "INSERT INTO returns ( paymentId, returnDate, fee) VALUES ( ?, ?, ?);";
         try {
             statement = connection.prepareStatement(insert);
-            statement.setInt(1, return1.getReturnId());
-            statement.setInt(2, return1.getPaymentId());
-            statement.setDate(3, Date.valueOf(return1.getReturnDate())); // Convert LocalDate to SQL Date
-            statement.setInt(4, return1.getFee());
+            statement.setInt(1, return1.getPaymentId());
+            statement.setDate(2, Date.valueOf(return1.getReturnDate())); // Convert LocalDate to SQL Date
+            statement.setDouble(3, return1.getFee());
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -203,7 +238,7 @@ public class daoItem implements interfaceRevery{
             statement = connection.prepareStatement(update);
             statement.setString(1, item1.getItem());
             statement.setInt(2, item1.getCatId());
-            statement.setInt(3, item1.getRentPrice());
+            statement.setDouble(3, item1.getRentPrice());
             statement.setInt(4, item1.getStock());
             statement.setInt(5, item1.getId());
             statement.executeUpdate();
@@ -259,7 +294,33 @@ public class daoItem implements interfaceRevery{
             }
         }
     }
+        @Override
+    public void updateRentalStatus(int rentalId, String status) {
+        String updateQuery = "UPDATE rentals SET rentalStatus = ? WHERE rentalId = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+            statement.setString(1, status); // ENUM values should be stored as strings
+            statement.setInt(2, rentalId);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // Update payment status (ENUM)
     
+    @Override
+    public void updatePaymentStatus(int paymentId, String status) {
+        String updateQuery = "UPDATE payments SET paymentStatus = ? WHERE paymentId = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+            statement.setString(1, status); // ENUM values should be stored as strings
+            statement.setInt(2, paymentId);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
     
     @Override
     public void deleteC(int id) {
@@ -290,10 +351,9 @@ public class daoItem implements interfaceRevery{
             ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
                 Item item1 = new Item();
-                item1.setId(rs.getInt("id"));
+                item1.setId(rs.getInt("itemId"));
                 item1.setItem(rs.getString("name"));
-                item1.setRentPrice(rs.getInt("rentalPrice"));
-                item1.setStock(rs.getInt("stock"));
+                item1.setRentPrice(rs.getDouble("rentalPrice"));
                 listItem.add(item1);
             }
         } catch (SQLException ex) {
@@ -311,14 +371,13 @@ public class daoItem implements interfaceRevery{
             listItem = new ArrayList<Item>();
             PreparedStatement st = connection.prepareStatement(select);
             st.setString(1, category);
-            ResultSet rs = st.executeQuery(select);
+            ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 Item item1 = new Item();
                 item1.setId(rs.getInt("itemId"));
                 item1.setItem(rs.getString("name"));
                 item1.setCatId(rs.getInt("categoryId"));
-                item1.setRentPrice(rs.getInt("rentalPrice"));
-                item1.setStock(rs.getInt("stock"));
+                item1.setRentPrice(rs.getDouble("rentalPrice"));
                 listItem.add(item1);
             }
         } catch (SQLException ex) {
@@ -347,7 +406,7 @@ public class daoItem implements interfaceRevery{
 
         return listCategory;
     }
-    public List<Rental> getRental() {
+        public List<Rental> getRental() {
         List<Rental> listRents = null;
         select = "SELECT rentalId,borrowerName,itemId,rentalDate,returnDate,totalPrice FROM rentals";
         try {
@@ -361,7 +420,6 @@ public class daoItem implements interfaceRevery{
                 rent1.setItemId(rs.getInt("itemId"));
                 rent1.setRentalDate(rs.getDate("rentalDate").toLocalDate());
                 rent1.setReturnDate(rs.getDate("returnDate").toLocalDate());
-                rent1.setTotalPrice(rs.getInt("totalPrice"));
                 listRents.add(rent1);
             }
         } catch (SQLException ex) {
@@ -370,7 +428,8 @@ public class daoItem implements interfaceRevery{
 
         return listRents;
     }
-    public List<Returns> getReturns() {
+        
+        public List<Returns> getReturns() {
         List<Returns> listReturns = null;
         select = "SELECT returnId, paymentId, returnDate, fee FROM returns";
         try {
@@ -382,7 +441,7 @@ public class daoItem implements interfaceRevery{
                 return1.setReturnId(rs.getInt("returnId"));
                 return1.setPaymentId(rs.getInt("paymentId"));
                 return1.setReturnDate(rs.getDate("returnDate").toLocalDate()); // Convert SQL Date to LocalDate
-                return1.setFee(rs.getInt("fee"));
+                return1.setFee(rs.getDouble("fee"));
                 listReturns.add(return1);
             }
         } catch (SQLException ex) {
@@ -411,7 +470,7 @@ public class daoItem implements interfaceRevery{
                 Returns return1 = new Returns();
                 return1.setBorrowerName(rs.getString("borrowerName"));
                 return1.setItemName(rs.getString("itemName"));
-                return1.setReturnDate(rs.getDate("rentalDate").toLocalDate()); // Convert SQL Date to LocalDate
+                return1.setRentalDate(rs.getDate("rentalDate").toLocalDate()); // Convert SQL Date to LocalDate
                 return1.setStatus(rs.getString("rentalStatus"));
                 listReturns.add(return1);
             }
