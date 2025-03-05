@@ -123,7 +123,7 @@ public class GUIHomepage extends javax.swing.JFrame {
                 showSelectItemDialog(selectedCategory);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Penyewaan dibatalkan.");
+            JOptionPane.showMessageDialog(null, "Rental cancelled.");
         }
     }
 
@@ -131,7 +131,7 @@ public class GUIHomepage extends javax.swing.JFrame {
     controllerHome controller = new controllerHome(this);
 
     // Menampilkan dialog input untuk payment id
-    String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
+    String paymentId = JOptionPane.showInputDialog(null, "Enter Payment ID:");
     
     if (paymentId != null && !paymentId.trim().isEmpty()) {
         try {
@@ -141,9 +141,9 @@ public class GUIHomepage extends javax.swing.JFrame {
                 StringBuilder formattedOutput = new StringBuilder("<html>");
                 
                 for (Returns returnData : returnDataList) {
-                    formattedOutput.append("Nama Penyewa     : ").append(returnData.getBorrowerName()).append("<br>")
-                            .append("Barang Dipinjam  : ").append(returnData.getitemName()).append("<br>")
-                            .append("Tanggal Meminjam : ").append(returnData.getRentalDate()).append("<br>")
+                    formattedOutput.append("Borrower Name     : ").append(returnData.getBorrowerName()).append("<br>")
+                            .append("Item Borrowed  : ").append(returnData.getitemName()).append("<br>")
+                            .append("Rent Date : ").append(returnData.getRentalDate()).append("<br>")
                             .append("Status           : ").append(returnData.getStatus()).append("<br><br>");
                 }
                 formattedOutput.append("</html>");
@@ -163,20 +163,20 @@ public class GUIHomepage extends javax.swing.JFrame {
                     // User memilih Return
                     int idNum = Integer.parseInt(paymentId);
                     controller.insertReturn(idNum);
-                    JOptionPane.showMessageDialog(null, "Proses Return dilakukan untuk Payment ID: " + paymentId);
+                    JOptionPane.showMessageDialog(null, "Return process executed for Payment ID: " + paymentId);
                 } else {
                     // User memilih Cancel atau menutup dialog
-                    JOptionPane.showMessageDialog(null, "Proses Return dibatalkan.");
+                    JOptionPane.showMessageDialog(null, "Return process cancelled.");
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Data tidak ditemukan untuk Payment ID: " + paymentId);
+                JOptionPane.showMessageDialog(null, "Data not found for Payment ID: " + paymentId);
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Payment ID harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Payment ID must be a number!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
         // Jika pengguna membatalkan atau tidak memasukkan payment id
-        JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
+        JOptionPane.showMessageDialog(null, "Payment ID input cancelled or empty.");
     }
 }
 
@@ -211,11 +211,11 @@ public class GUIHomepage extends javax.swing.JFrame {
 
         // Membuat panel baru untuk dialog kedua
         JPanel itemPanel = new JPanel(new BorderLayout());
-        itemPanel.add(new JLabel("Pilih barang dari kategori: " + category), BorderLayout.NORTH);
+        itemPanel.add(new JLabel("Choose an item from category: " + category), BorderLayout.NORTH);
         itemPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Menampilkan dialog kedua untuk memilih barang
-        int itemResult = JOptionPane.showConfirmDialog(null, itemPanel, "Pilih Barang",
+        int itemResult = JOptionPane.showConfirmDialog(null, itemPanel, "Choose Item",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         // Jika pengguna menekan OK, tampilkan barang yang dipilih
@@ -240,7 +240,7 @@ public class GUIHomepage extends javax.swing.JFrame {
                 panel.add(paymentMethodField);
 
                 // Menampilkan dialog dengan panel
-                int result = JOptionPane.showConfirmDialog(null, panel, "Input Detail Peminjaman", JOptionPane.OK_CANCEL_OPTION);
+                int result = JOptionPane.showConfirmDialog(null, panel, "Enter Rental Details", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION) {
                     // Mengambil nilai dari input
                     String namaPeminjam = namaField.getText();
@@ -250,18 +250,18 @@ public class GUIHomepage extends javax.swing.JFrame {
                     controller.addData(namaPeminjam,tanggalMeminjam,tanggalPengembalian,selectedItem, paymentMethod);
 
                     // Menampilkan hasil
-                    String message = "Detail Peminjaman:\n"
+                    String message = "Rental Details:\n"
                             + "Item: " + selectedItem + "\n"
                             + "Name: " + namaPeminjam + "\n"
                             + "Rent Date: " + tanggalMeminjam + "\n"
                             + "Return Date: " + tanggalPengembalian;
                     JOptionPane.showMessageDialog(null, message);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Input detail peminjaman dibatalkan.");
+                    JOptionPane.showMessageDialog(null, "Rental detail input cancelled.");
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Pemilihan barang dibatalkan.");
+            JOptionPane.showMessageDialog(null, "Item selection cancelled.");
         }
     }
 

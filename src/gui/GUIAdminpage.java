@@ -208,7 +208,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // 🔹 Tampilkan Dialog
-        int result = JOptionPane.showConfirmDialog(null, panel, "Pilih Data",
+        int result = JOptionPane.showConfirmDialog(null, panel, "Choose Data",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         // ✅ Jika pengguna menekan OK
@@ -222,7 +222,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
                 // 🔹 Tampilkan di textAreaData
                 textAreaData.setText(itemList);
             } else {
-                JOptionPane.showMessageDialog(null, "Silakan pilih opsi terlebih dahulu.");
+                JOptionPane.showMessageDialog(null, "Please select an option first.");
             }
         }
     }
@@ -265,7 +265,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
             } else if ("Item".equals(selectedOption)) {
                 tambahItem(); // Panggil fungsi untuk tambah item
             } else {
-                JOptionPane.showMessageDialog(null, "Silakan pilih kategori atau item.");
+                JOptionPane.showMessageDialog(null, "Choose a category or item.");
             }
         } else {
             JOptionPane.showMessageDialog(null, "Add Data Failed");
@@ -289,7 +289,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
             controller.addCategory(categoryName);
             // Simpan kategori ke database atau struktur data
 //            addCategory(categoryId, categoryName);
-            JOptionPane.showMessageDialog(null, "Kategori berhasil ditambahkan!");
+            JOptionPane.showMessageDialog(null, "Category successfully added");
         }
     }
 
@@ -328,7 +328,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
             // Simpan item ke database atau struktur data
 //            addItem(itemId, itemName, categoryId, rentalPrice, stock);
-            JOptionPane.showMessageDialog(null, "Item berhasil ditambahkan!");
+            JOptionPane.showMessageDialog(null, "Item successfully added!");
         }
     }
 
@@ -370,7 +370,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
             } else if ("Item".equals(selectedOption)) {
                 editItem(); // Panggil fungsi untuk tambah item
             } else {
-                JOptionPane.showMessageDialog(null, "Silakan pilih kategori atau item.");
+                JOptionPane.showMessageDialog(null, "Choose a category or item.");
             }
         } else {
             JOptionPane.showMessageDialog(null, "Update Data Failed");
@@ -381,7 +381,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
     ControllerAdmin controller = new ControllerAdmin(this);
 
     // Debug: Tampilkan nilai yang diterima
-    System.out.println("Mengedit kategori - ID: " + categoryId + ", Nama: " + categoryName);
+    System.out.println("Editing category - ID: " + categoryId + ", Name: " + categoryName);
 
     // Mengisi field dengan nilai awal
     JTextField categoryIdField = new JTextField(String.valueOf(categoryId));
@@ -404,18 +404,18 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
         // Validasi input (pastikan nama tidak kosong)
         if (newCategoryName.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Nama kategori tidak boleh kosong!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Category name cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Debug: Tampilkan nilai baru
-        System.out.println("Nama baru: " + newCategoryName);
+        System.out.println("New name: " + newCategoryName);
 
         // Panggil controller untuk update kategori
         controller.updateCategory(newCategoryName, categoryId);
 
         // Konfirmasi kepada pengguna
-        JOptionPane.showMessageDialog(null, "Kategori berhasil diperbarui!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Category successfully updated!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 }
     
@@ -438,7 +438,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
         scrollPane.setPreferredSize(new Dimension(300, 150));
 
         int option = JOptionPane.showConfirmDialog(null, scrollPane,
-                "Pilih kategori yang akan diubah",
+                "Choose a category to be changed.",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE);
 
@@ -455,13 +455,13 @@ public class GUIAdminpage extends javax.swing.JFrame {
                     // Panggil editItem1
                     editKategori1(categoryName, categoryId);
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Data item tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Item data is not valid!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Pilih item terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Choose an item first.", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Perubahan item dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Item changes canceled.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -496,11 +496,11 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
                 // Update item
                 controller.updateItem(itemName, categoryId, rentPrice, itemId);
-                JOptionPane.showMessageDialog(null, "Item berhasil diperbarui!");
+                JOptionPane.showMessageDialog(null, "Item successfully updated!");
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Invalid input!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Gagal memperbarui item: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Failed to update item: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -524,7 +524,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
         scrollPane.setPreferredSize(new Dimension(300, 150));
 
         int option = JOptionPane.showConfirmDialog(null, scrollPane,
-                "Pilih item yang akan diubah",
+                "Choose an item to be changed.",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE);
 
@@ -543,13 +543,13 @@ public class GUIAdminpage extends javax.swing.JFrame {
                     // Panggil editItem1
                     editItem1(itemName, categoryId, rentPrice, itemId);
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Data item tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Item data is not valid!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Pilih item terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Choose an item first.", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Perubahan item dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Item changes canceled.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -591,7 +591,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
             } else if ("Item".equals(selectedOption)) {
                 hapusItem(); // Panggil fungsi untuk tambah item
             } else {
-                JOptionPane.showMessageDialog(null, "Silakan pilih kategori atau item.");
+                JOptionPane.showMessageDialog(null, "Choose a category or item.");
             }
         } else {
             JOptionPane.showMessageDialog(null, "Delete Data Failed");
@@ -620,7 +620,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
     // Tampilkan dialog untuk memilih kategori yang akan dihapus
     int option = JOptionPane.showConfirmDialog(null, scrollPane, 
-                                                "Pilih kategori yang akan dihapus", 
+                                                "Choose a category to delete.", 
                                                 JOptionPane.OK_CANCEL_OPTION, 
                                                 JOptionPane.PLAIN_MESSAGE);
 
@@ -636,15 +636,15 @@ public class GUIAdminpage extends javax.swing.JFrame {
             try {
                 // Panggil controller untuk menghapus kategori
                 controller.deleteCategory(categoryId);
-                JOptionPane.showMessageDialog(null, "Kategori berhasil dihapus!");
+                JOptionPane.showMessageDialog(null, "Category successfully deleted!");
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Gagal menghapus kategori: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Failed to delete category: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Pilih kategori terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Choose a category first.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     } else {
-        JOptionPane.showMessageDialog(null, "Penghapusan kategori dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Category deletion canceled.", "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 }
 
@@ -670,7 +670,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
 
     // Tampilkan dialog untuk memilih item yang akan dihapus
     int option = JOptionPane.showConfirmDialog(null, scrollPane, 
-                                                "Pilih item yang akan dihapus", 
+                                                "Choose an item to delete.", 
                                                 JOptionPane.OK_CANCEL_OPTION, 
                                                 JOptionPane.PLAIN_MESSAGE);
 
@@ -686,15 +686,15 @@ public class GUIAdminpage extends javax.swing.JFrame {
             try {
                 // Panggil controller untuk menghapus item
                 controller.deleteItem(itemId);
-                JOptionPane.showMessageDialog(null, "Item berhasil dihapus!");
+                JOptionPane.showMessageDialog(null, "Item successfully deleted!");
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Gagal menghapus item: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Failed to delete item: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Pilih item terlebih dahulu.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Choose an item first.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     } else {
-        JOptionPane.showMessageDialog(null, "Penghapusan item dibatalkan.", "Info", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Item deletion canceled.", "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 }
 
@@ -711,7 +711,7 @@ public class GUIAdminpage extends javax.swing.JFrame {
                 categoryNames.add(category.getId() + " - " + category.getCatName());
             }
 
-            return categoryNames.isEmpty() ? "Tidak ada kategori tersedia." : "Kategori:\n" + String.join("\n", categoryNames);
+            return categoryNames.isEmpty() ? "No categories available." : "Category:\n" + String.join("\n", categoryNames);
 
         }
 
@@ -724,10 +724,10 @@ public class GUIAdminpage extends javax.swing.JFrame {
                 itemNames.add(item.getItem()); // Ambil nama item
             }
 
-            return itemNames.isEmpty() ? "Tidak ada item tersedia." : "Item:\n" + String.join("\n", itemNames);
+            return itemNames.isEmpty() ? "No Item available" : "Item:\n" + String.join("\n", itemNames);
         }
 
-        return "Pilihan tidak valid.";
+        return "Invalid choice.";
     }
 
 

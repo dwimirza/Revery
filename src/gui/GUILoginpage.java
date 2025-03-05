@@ -58,12 +58,12 @@ public class GUILoginpage extends javax.swing.JFrame {
                 
                 // Cek username dan password
                 if (objDb.loginAdmin(admin1)) {
-                    JOptionPane.showMessageDialog(null, "Login Berhasil!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Login Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                     new GUIAdminpage();
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Login Gagal! Cek Username dan Password.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Login Failed! Check Username and Password.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
