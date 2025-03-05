@@ -4,8 +4,6 @@
  */
 package gui;
 
-import controller.controllerAdmin;
-import controller.controllerHome;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
