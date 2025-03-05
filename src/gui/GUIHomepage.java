@@ -1,4 +1,3 @@
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.swing.*;
 import model.Category;
+import model.Item;
 
 /**
  *
@@ -24,7 +24,6 @@ public class GUIHomepage extends javax.swing.JFrame {
 
     private ArrayList<String> rentalUnits;
     private JLabel out_category;
-    private JLabel out_item;
     /**
      * Creates new form GUIHomepage
      */
@@ -72,22 +71,25 @@ public class GUIHomepage extends javax.swing.JFrame {
         });
     }
 
-    public void setOutCategory(int category){
+     public void setOutCategory(int category){
         out_category.setText(Integer.toString(category));
+     }
+//    public void setOutItem(int item){
+//        out_item.setText(Integer.toString(item));
+//    }
+    public void setOutItem(int item){
+//        out_item.setText(item);
     }
-    public void setOutItem(String item){
-        out_item.setText(item);
-    }
-
     private void showRentDialog() {
         JPanel panel = new JPanel(new BorderLayout()); // Menggunakan BorderLayout untuk menambahkan JScrollPane
-
-            
+        
+        //Manggil data 
         controllerHome controller = new controllerHome(this);
         List<Category> categories = controller.getCategories();
         
         rentalUnits = new ArrayList<>();    
         rentalUnits.add(String.valueOf(out_category));
+//        rentalUnits.add(String.valueOf(out_item));
         
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Category category : categories) {
@@ -131,19 +133,24 @@ public class GUIHomepage extends javax.swing.JFrame {
 
     private void showSelectItemDialog(String category) {
         // Misalnya kita punya barang yang berbeda berdasarkan kategori yang dipilih
-        List<String> items = new ArrayList<>();
+        controllerHome controller = new controllerHome(this);
+        List<Item> items = controller.getItem(category);
+        
+        rentalUnits = new ArrayList<>();
+//        rentalUnits.add(String.valueOf(out_item));
+        
         String expectedCategory;
         expectedCategory = category;
-        if (category.equalsIgnoreCase(expectedCategory)) {
-            items.add(String.valueOf(out_item)); // Tambahkan out_item ke dalam list items
-        } else {
-            System.out.println("Item not found for category: " + category); // Pesan error yang lebih spesifik
-        }
+//        if (category.equalsIgnoreCase(expectedCategory)) {
+//            items.add(out_item); // Tambahkan out_item ke dalam list items
+//        } else {
+//            System.out.println("Item not found for category: " + category); // Pesan error yang lebih spesifik
+//        }
 
         // Menyiapkan ListModel untuk JList
         DefaultListModel<String> itemListModel = new DefaultListModel<>();
-        for (String item : items) {
-            itemListModel.addElement(item);  // Menambahkan setiap item dalam list ke list model
+        for (Item item : items) {
+            itemListModel.addElement(item.getItem());  // Menambahkan setiap item dalam list ke list model
         }
 
         // Membuat JList untuk barang-barang berdasarkan kategori
@@ -204,6 +211,8 @@ public class GUIHomepage extends javax.swing.JFrame {
         }
     }
 
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -228,6 +237,11 @@ public class GUIHomepage extends javax.swing.JFrame {
         btnRent.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnRent.setText("Rent");
         btnRent.setPreferredSize(new java.awt.Dimension(200, 100));
+        btnRent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRentActionPerformed(evt);
+            }
+        });
 
         btnReturn.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnReturn.setText("Return");
@@ -275,6 +289,10 @@ public class GUIHomepage extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnRentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRentActionPerformed
 
     /**
      * @param args the command line arguments

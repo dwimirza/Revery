@@ -32,12 +32,12 @@ public interface interfaceRevery {
     
     public void updateCategory(Category category1);
 
-    public void delete(int itemId);
+    public void deleteItem(int itemId);
     
     public void deleteC(int categoryId);
 
     
-    public List<Item> getItem();
+    public List<Item> getItem(String category);
     
     public List<Category> getCategory();
     
