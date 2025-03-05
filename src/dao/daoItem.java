@@ -87,13 +87,13 @@ public class daoItem implements interfaceRevery{
     @Override
     public void insertItem(Item item1) {
         PreparedStatement statement = null;
-        insert = "INSERT INTO item (itemId, name, categoryId, rentLPrice, stock) VALUES (?, ?, ?, ?, ?);";
+        insert = "INSERT INTO item (itemId, name, categoryId, rentalPrice, stock) VALUES (?, ?, ?, ?, ?);";
         try {
             statement = connection.prepareStatement(insert);
             statement.setString(1, String.valueOf(item1.getId()));
             statement.setString(2, item1.getItem());
             statement.setInt(3, item1.getCatId());
-            statement.setInt(4, item1.getRentPrice());
+            statement.setDouble(4, item1.getRentPrice());
             statement.setInt(5, item1.getStock());
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -213,7 +213,7 @@ public class daoItem implements interfaceRevery{
             statement = connection.prepareStatement(update);
             statement.setString(1, item1.getItem());
             statement.setInt(2, item1.getCatId());
-            statement.setInt(3, item1.getRentPrice());
+            statement.setDouble(3, item1.getRentPrice());
             statement.setInt(4, item1.getStock());
             statement.setInt(5, item1.getId());
             statement.executeUpdate();
@@ -300,9 +300,9 @@ public class daoItem implements interfaceRevery{
             ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
                 Item item1 = new Item();
-                item1.setId(rs.getInt("id"));
+                item1.setId(rs.getInt("itemId"));
                 item1.setItem(rs.getString("name"));
-                item1.setRentPrice(rs.getInt("rentalPrice"));
+                item1.setRentPrice(rs.getDouble("rentalPrice"));
                 item1.setStock(rs.getInt("stock"));
                 listItem.add(item1);
             }
@@ -327,7 +327,7 @@ public class daoItem implements interfaceRevery{
                 item1.setId(rs.getInt("itemId"));
                 item1.setItem(rs.getString("name"));
                 item1.setCatId(rs.getInt("categoryId"));
-                item1.setRentPrice(rs.getInt("rentalPrice"));
+                item1.setRentPrice(rs.getDouble("rentalPrice"));
                 item1.setStock(rs.getInt("stock"));
                 listItem.add(item1);
             }

@@ -9,6 +9,7 @@ import dao.interfaceRevery;
 import gui.GUIAdminpage;
 import gui.GUIHomepage;
 import model.Category;
+import model.Item;
 
 /**
  *
@@ -32,5 +33,9 @@ public class ControllerAdmin {
 //        JOptionPane.showMessageDialog(frame, "Berhasil menambahkan data baru");
 //        
 //        kembali();
+    }
+    
+    public void addItem(Item item) {
+    infcRevery.insertItem(item); // Pass the object to the DAO
     }
 }
