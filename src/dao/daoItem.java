@@ -276,8 +276,31 @@ public class daoItem implements interfaceRevery{
             }
         }
     }
+    
+    public List<Item> getItem(){
+      List<Item> listItem = null;
+        select = "SELECT * FROM item";
+        try {
+            listItem = new ArrayList<Item>();
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(select);
+            while (rs.next()) {
+                Item item1 = new Item();
+                item1.setId(rs.getInt("id"));
+                item1.setItem(rs.getString("name"));
+                item1.setRentPrice(rs.getInt("rentalPrice"));
+                item1.setStock(rs.getInt("stock"));
+                listItem.add(item1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(daoItem.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-    public List<Item> getItem(String category) {
+        return listItem;  
+    };
+    
+    public List<Item> getItemByCat(String category) {
+        setConnection();
         List<Item> listItem = null;
         select = "SELECT * FROM item where categoryId = ? ";
         try {

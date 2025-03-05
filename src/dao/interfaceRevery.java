@@ -37,7 +37,8 @@ public interface interfaceRevery {
     public void deleteC(int categoryId);
 
     
-    public List<Item> getItem(String category);
+    public List<Item> getItemByCat(String category);
+    public List<Item> getItem();
     
     public List<Category> getCategory();
     

@@ -24,7 +24,6 @@ public class GUIHomepage extends javax.swing.JFrame {
 
     private ArrayList<String> rentalUnits;
     private JLabel out_category;
-
     /**
      * Creates new form GUIHomepage
      */
@@ -57,61 +56,49 @@ public class GUIHomepage extends javax.swing.JFrame {
         btnReturn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Menampilkan dialog input untuk Payment ID
+                // Menampilkan dialog input untuk payment id
                 String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
 
-                // Memeriksa apakah pengguna memasukkan Payment ID atau membatalkan dialog
+                // Memeriksa apakah pengguna memasukkan payment id atau membatalkan dialog
                 if (paymentId != null && !paymentId.trim().isEmpty()) {
-                    // Hardcoded data untuk testing tampilan
-                    String message = "<html><body style='width: 200px;'>"
-                            + "<b>Detail Pengembalian:</b><br>"
-                            + "Nama Penyewa     : John Doe<br>"
-                            + "Barang Dipinjam  : Laptop ASUS ROG<br>"
-                            + "Tanggal Meminjam : 2024-02-20<br>"
-                            + "Status           : Belum Dikembalikan"
-                            + "</body></html>";
-
-                    JOptionPane.showMessageDialog(null, message, "Detail Pengembalian", JOptionPane.INFORMATION_MESSAGE);
-
+                    // Jika payment id valid, tampilkan pesan konfirmasi
+                    JOptionPane.showMessageDialog(null, "Payment ID: " + paymentId + " berhasil dimasukkan.");
                 } else {
-                    // Jika pengguna membatalkan atau tidak memasukkan Payment ID
+                    // Jika pengguna membatalkan atau tidak memasukkan payment id
                     JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
                 }
             }
         });
-
     }
 
-    public void setOutCategory(int category) {
+     public void setOutCategory(int category){
         out_category.setText(Integer.toString(category));
-    }
+     }
 //    public void setOutItem(int item){
 //        out_item.setText(Integer.toString(item));
 //    }
-
-    public void setOutItem(int item) {
+    public void setOutItem(int item){
 //        out_item.setText(item);
     }
-
     private void showRentDialog() {
         JPanel panel = new JPanel(new BorderLayout()); // Menggunakan BorderLayout untuk menambahkan JScrollPane
-
+        
         //Manggil data 
         controllerHome controller = new controllerHome(this);
         List<Category> categories = controller.getCategories();
-
-        rentalUnits = new ArrayList<>();
+        
+        rentalUnits = new ArrayList<>();    
         rentalUnits.add(String.valueOf(out_category));
 //        rentalUnits.add(String.valueOf(out_item));
-
+        
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Category category : categories) {
-            listModel.addElement(category.getId() + " - " + category.getCatName()); // Add category name
+            listModel.addElement(category.getCatName()); // Add category name
         }
 
         JList<String> rentalList = new JList<>(listModel);
         rentalList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
+        
         // Membungkus JList dengan JScrollPane untuk mendukung scrolling
         JScrollPane scrollPane = new JScrollPane(rentalList);
 
@@ -147,11 +134,11 @@ public class GUIHomepage extends javax.swing.JFrame {
     private void showSelectItemDialog(String category) {
         // Misalnya kita punya barang yang berbeda berdasarkan kategori yang dipilih
         controllerHome controller = new controllerHome(this);
-        List<Item> items = controller.getItem(category);
-
+        List<Item> items = controller.getItemByCat(category);
+        
         rentalUnits = new ArrayList<>();
 //        rentalUnits.add(String.valueOf(out_item));
-
+        
         String expectedCategory;
         expectedCategory = category;
 //        if (category.equalsIgnoreCase(expectedCategory)) {
@@ -163,7 +150,7 @@ public class GUIHomepage extends javax.swing.JFrame {
         // Menyiapkan ListModel untuk JList
         DefaultListModel<String> itemListModel = new DefaultListModel<>();
         for (Item item : items) {
-            itemListModel.addElement(item.getId() + " - " + item.getItem());  // Menambahkan setiap item dalam list ke list model
+            itemListModel.addElement(item.getItem());  // Menambahkan setiap item dalam list ke list model
         }
 
         // Membuat JList untuk barang-barang berdasarkan kategori
@@ -224,6 +211,8 @@ public class GUIHomepage extends javax.swing.JFrame {
         }
     }
 
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -248,11 +237,6 @@ public class GUIHomepage extends javax.swing.JFrame {
         btnRent.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnRent.setText("Rent");
         btnRent.setPreferredSize(new java.awt.Dimension(200, 100));
-        btnRent.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRentActionPerformed(evt);
-            }
-        });
 
         btnReturn.setFont(new java.awt.Font("Cambria Math", 1, 24)); // NOI18N
         btnReturn.setText("Return");
