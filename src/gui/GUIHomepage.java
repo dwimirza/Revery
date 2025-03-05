@@ -56,25 +56,54 @@ public class GUIHomepage extends javax.swing.JFrame {
         btnReturn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Menampilkan dialog input untuk payment id
+                // Menampilkan dialog input untuk Payment ID
                 String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
 
                 if (paymentId != null && !paymentId.trim().isEmpty()) {
-                    String message = "<html><body style='width: 200px;'>"
-                            + "<b>Detail Pengembalian:</b><br>"
-                            + "Nama Penyewa     : John Doe<br>"
-                            + "Barang Dipinjam  : Laptop ASUS ROG<br>"
-                            + "Tanggal Meminjam : 2024-02-20<br>"
-                            + "Status           : Belum Dikembalikan"
-                            + "</body></html>";
+                    // Panel untuk menampung field input
+                    JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5)); // 4 Baris, 2 Kolom, Spasi antar komponen
 
-                    JOptionPane.showMessageDialog(null, message, "Detail Pengembalian", JOptionPane.INFORMATION_MESSAGE);
+                    // Label dan TextField untuk setiap detail
+                    panel.add(new JLabel("Nama Penyewa:"));
+                    JTextField nameField = new JTextField("John Doe"); // Contoh data
+                    nameField.setEditable(false);
+                    panel.add(nameField);
+
+                    panel.add(new JLabel("Barang Dipinjam:"));
+                    JTextField itemField = new JTextField("Laptop ASUS ROG");
+                    itemField.setEditable(false);
+                    panel.add(itemField);
+
+                    panel.add(new JLabel("Tanggal Meminjam:"));
+                    JTextField dateField = new JTextField("2024-02-20");
+                    dateField.setEditable(false);
+                    panel.add(dateField);
+
+                    panel.add(new JLabel("Status Pengembalian:"));
+                    JTextField statusField = new JTextField("Belum Dikembalikan"); // Kembali ke TextField
+                    statusField.setEditable(false);
+                    panel.add(statusField);
+
+                    // Custom Button Options
+                    Object[] options = {"Return", "Cancel"};
+
+                    // Menampilkan dialog dengan tombol "Return" dan "Cancel"
+                    int result = JOptionPane.showOptionDialog(null, panel, "Detail Pengembalian",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+                    // Cek tombol yang diklik
+                    if (result == 0) { // Jika tombol "Return" ditekan
+                        JOptionPane.showMessageDialog(null, "Pengembalian berhasil diproses.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Pengembalian dibatalkan.");
+                    }
                 } else {
-                    // Jika pengguna membatalkan atau tidak memasukkan payment id
                     JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
                 }
             }
         });
+
+
     }
 
      public void setOutCategory(int category){
@@ -99,7 +128,7 @@ public class GUIHomepage extends javax.swing.JFrame {
         
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Category category : categories) {
-            listModel.addElement(category.getCatName()); // Add category name
+            listModel.addElement(category.getId() + " - " + category.getCatName()); // Add category name
         }
 
         JList<String> rentalList = new JList<>(listModel);
@@ -156,7 +185,7 @@ public class GUIHomepage extends javax.swing.JFrame {
         // Menyiapkan ListModel untuk JList
         DefaultListModel<String> itemListModel = new DefaultListModel<>();
         for (Item item : items) {
-            itemListModel.addElement(item.getItem());  // Menambahkan setiap item dalam list ke list model
+            itemListModel.addElement(item.getId() + " - " + item.getItem());  // Menambahkan setiap item dalam list ke list model
         }
 
         // Membuat JList untuk barang-barang berdasarkan kategori
