@@ -59,10 +59,16 @@ public class GUIHomepage extends javax.swing.JFrame {
                 // Menampilkan dialog input untuk payment id
                 String paymentId = JOptionPane.showInputDialog(null, "Masukkan Payment ID:");
 
-                // Memeriksa apakah pengguna memasukkan payment id atau membatalkan dialog
                 if (paymentId != null && !paymentId.trim().isEmpty()) {
-                    // Jika payment id valid, tampilkan pesan konfirmasi
-                    JOptionPane.showMessageDialog(null, "Payment ID: " + paymentId + " berhasil dimasukkan.");
+                    String message = "<html><body style='width: 200px;'>"
+                            + "<b>Detail Pengembalian:</b><br>"
+                            + "Nama Penyewa     : John Doe<br>"
+                            + "Barang Dipinjam  : Laptop ASUS ROG<br>"
+                            + "Tanggal Meminjam : 2024-02-20<br>"
+                            + "Status           : Belum Dikembalikan"
+                            + "</body></html>";
+
+                    JOptionPane.showMessageDialog(null, message, "Detail Pengembalian", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     // Jika pengguna membatalkan atau tidak memasukkan payment id
                     JOptionPane.showMessageDialog(null, "Input Payment ID dibatalkan atau kosong.");
